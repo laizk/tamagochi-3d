@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('core play loop', () => {
   test.beforeEach(async ({ page }) => {
@@ -39,9 +39,9 @@ test.describe('core play loop', () => {
     await page.goto('/');
     const before = await page.getByLabel(/hunger \d+ percent/i).getAttribute('aria-label');
     await page.getByRole('button', { name: /feed apple/i }).click();
-    await expect.poll(async () =>
-      await page.getByLabel(/hunger \d+ percent/i).getAttribute('aria-label')
-    ).not.toBe(before);
+    await expect
+      .poll(async () => await page.getByLabel(/hunger \d+ percent/i).getAttribute('aria-label'))
+      .not.toBe(before);
   });
 
   test('travel to town via portal works', async ({ page }) => {
