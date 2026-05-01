@@ -4,6 +4,8 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Dino Friend',
   description: 'A 3D dino pet you take care of.',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: 'Dino', statusBarStyle: 'default' },
 };
 
 export const viewport: Viewport = {
