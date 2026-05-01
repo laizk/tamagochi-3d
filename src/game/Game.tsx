@@ -2,6 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useEffect, useState } from 'react';
+import { ActionBar } from '@/src/game/HUD/ActionBar';
 import { AreaName } from '@/src/game/HUD/AreaName';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
@@ -68,6 +69,7 @@ export function Game() {
       <AreaName />
       <Welcome message={welcome} />
       <MiniMap />
+      <ActionBar />
       <SettingsMenu />
     </div>
   );
