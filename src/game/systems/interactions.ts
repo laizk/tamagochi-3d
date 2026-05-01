@@ -18,8 +18,16 @@ export function feed(food: FoodId): void {
   if (f.happyBonus) s.applyStatDelta('happy', f.happyBonus);
 }
 
+type Listener = () => void;
+const listeners = new Set<Listener>();
+export function onPet(listener: Listener): () => boolean {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
 export function pet(): void {
   useGame.getState().applyStatDelta('happy', 8);
+  for (const l of listeners) l();
 }
 
 export function bath(): void {
