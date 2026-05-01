@@ -2,6 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useEffect, useState } from 'react';
+import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
 import { StatsBar } from '@/src/game/HUD/StatsBar';
 import { Welcome } from '@/src/game/HUD/Welcome';
 import { useGame } from '@/src/game/store';
@@ -63,6 +64,7 @@ export function Game() {
       </Canvas>
       <StatsBar />
       <Welcome message={welcome} />
+      <SettingsMenu />
     </div>
   );
 }
