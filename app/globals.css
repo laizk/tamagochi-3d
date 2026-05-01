@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  --background: #cbe9ff;
+  --foreground: #0f172a;
+}
+
+html,
+body {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+canvas {
+  touch-action: none;
+}
