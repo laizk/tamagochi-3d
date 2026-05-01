@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DECAY_PER_MINUTE, OFFLINE_MULTIPLIER, computeDecay } from '@/src/game/config/decay';
+import { computeDecay, DECAY_PER_MINUTE, OFFLINE_MULTIPLIER } from '@/src/game/config/decay';
 
 describe('decay config', () => {
   it('exports per-minute rates for all actionable stats', () => {

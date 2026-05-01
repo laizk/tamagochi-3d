@@ -1,4 +1,4 @@
-import { useGame, type GameState } from '@/src/game/store';
+import { type GameState, useGame } from '@/src/game/store';
 
 export const SAVE_KEY = 'tamagochi-3d:save:v1';
 

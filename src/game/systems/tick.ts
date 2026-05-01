@@ -1,5 +1,5 @@
-import { useGame, type StatKey } from '@/src/game/store';
 import { computeDecay, computeHealth } from '@/src/game/config/decay';
+import { type StatKey, useGame } from '@/src/game/store';
 
 const ACTIONABLE: Array<Exclude<StatKey, 'health'>> = ['hunger', 'happy', 'energy', 'clean'];
 

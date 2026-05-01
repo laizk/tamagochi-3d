@@ -1,6 +1,6 @@
-import { tick } from '@/src/game/systems/tick';
-import { useGame, type StatKey } from '@/src/game/store';
 import { OFFLINE_MULTIPLIER } from '@/src/game/config/decay';
+import { type StatKey, useGame } from '@/src/game/store';
+import { tick } from '@/src/game/systems/tick';
 
 const MAX_OFFLINE_SECONDS = 7 * 24 * 60 * 60;
 

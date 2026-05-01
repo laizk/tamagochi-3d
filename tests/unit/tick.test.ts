@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
 import { tick } from '@/src/game/systems/tick';
 
@@ -27,7 +27,7 @@ describe('tick', () => {
 
   it('clamps stats at 0', () => {
     useGame.getState().setStat('hunger', 1);
-    tick(60 * 60);  // an hour
+    tick(60 * 60); // an hour
     expect(useGame.getState().dino.stats.hunger).toBe(0);
   });
 });

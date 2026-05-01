@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import { save, load, SAVE_KEY } from '@/src/lib/persistence';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
+import { load, SAVE_KEY, save } from '@/src/lib/persistence';
 
 describe('persistence', () => {
   beforeEach(() => {
@@ -34,7 +34,9 @@ describe('persistence', () => {
     localStorage.setItem(SAVE_KEY, 'not-json{');
     const result = load();
     expect(result).toBeNull();
-    const corruptKeys = Object.keys(localStorage).filter((k) => k.startsWith(`${SAVE_KEY}:corrupt:`));
+    const corruptKeys = Object.keys(localStorage).filter((k) =>
+      k.startsWith(`${SAVE_KEY}:corrupt:`),
+    );
     expect(corruptKeys.length).toBe(1);
   });
 });

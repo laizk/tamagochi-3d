@@ -1,7 +1,7 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { DECAY_PER_MINUTE, OFFLINE_MULTIPLIER } from '@/src/game/config/decay';
 import { useGame } from '@/src/game/store';
 import { applyOfflineDrain } from '@/src/lib/time';
-import { OFFLINE_MULTIPLIER, DECAY_PER_MINUTE } from '@/src/game/config/decay';
 
 describe('applyOfflineDrain', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
