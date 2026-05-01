@@ -1,8 +1,9 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { StatsBar } from '@/src/game/HUD/StatsBar';
+import { Welcome } from '@/src/game/HUD/Welcome';
 import { useGame } from '@/src/game/store';
 import { tick } from '@/src/game/systems/tick';
 import { World } from '@/src/game/world/World';
@@ -10,11 +11,20 @@ import { load, scheduleSave } from '@/src/lib/persistence';
 import { applyOfflineDrain } from '@/src/lib/time';
 
 export function Game() {
+  const [welcome, setWelcome] = useState<string | null>(null);
+
   useEffect(() => {
     const loaded = load();
     if (loaded) {
       useGame.getState().hydrate(loaded);
-      applyOfflineDrain(loaded.lastSeenAt);
+      const summary = applyOfflineDrain(loaded.lastSeenAt);
+      if (summary.biggestDrop !== 'okay') {
+        setWelcome(`Dino is ${summary.biggestDrop}!`);
+      } else {
+        setWelcome('Dino missed you! 🦕');
+      }
+    } else {
+      setWelcome("It's an egg! Tap to hatch.");
     }
     useGame.getState().touchSeenAt();
   }, []);
@@ -52,6 +62,7 @@ export function Game() {
         </Suspense>
       </Canvas>
       <StatsBar />
+      <Welcome message={welcome} />
     </div>
   );
 }
