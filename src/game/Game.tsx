@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { ActionBar } from '@/src/game/HUD/ActionBar';
 import { AreaName } from '@/src/game/HUD/AreaName';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
+import { Onboarding } from '@/src/game/HUD/Onboarding';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
 import { StatsBar } from '@/src/game/HUD/StatsBar';
 import { ThoughtBubble } from '@/src/game/HUD/ThoughtBubble';
@@ -17,6 +18,7 @@ import { applyOfflineDrain } from '@/src/lib/time';
 
 export function Game() {
   const [welcome, setWelcome] = useState<string | null>(null);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     const loaded = load();
@@ -30,6 +32,7 @@ export function Game() {
       }
     } else {
       setWelcome("It's an egg! Tap to hatch.");
+      setNeedsOnboarding(true);
     }
     useGame.getState().touchSeenAt();
   }, []);
@@ -73,6 +76,7 @@ export function Game() {
       <ActionBar />
       <SettingsMenu />
       <ThoughtBubble />
+      {needsOnboarding && <Onboarding onDone={() => setNeedsOnboarding(false)} />}
     </div>
   );
 }
