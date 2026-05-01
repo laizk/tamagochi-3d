@@ -14,7 +14,9 @@ export function Dino() {
 
   useEffect(() => {
     const unsub = onPet(() => setBounce(performance.now()));
-    return () => { unsub(); };
+    return () => {
+      unsub();
+    };
   }, []);
 
   useFrame((_, _dt) => {

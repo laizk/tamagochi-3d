@@ -7,6 +7,7 @@ import { AreaName } from '@/src/game/HUD/AreaName';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
 import { StatsBar } from '@/src/game/HUD/StatsBar';
+import { ThoughtBubble } from '@/src/game/HUD/ThoughtBubble';
 import { Welcome } from '@/src/game/HUD/Welcome';
 import { useGame } from '@/src/game/store';
 import { tick } from '@/src/game/systems/tick';
@@ -71,6 +72,7 @@ export function Game() {
       <MiniMap />
       <ActionBar />
       <SettingsMenu />
+      <ThoughtBubble />
     </div>
   );
 }
