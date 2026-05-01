@@ -8,6 +8,10 @@
 html,
 body {
   height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
 }
 canvas {
   touch-action: none;

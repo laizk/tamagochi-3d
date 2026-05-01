@@ -13,7 +13,7 @@ const STATS: Array<{ key: StatKey; emoji: string; color: string }> = [
 export function StatsBar() {
   const stats = useGame((s) => s.dino.stats);
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center p-3">
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center p-3 pt-[env(safe-area-inset-top)]">
       <div className="pointer-events-auto flex gap-2 rounded-2xl bg-white/80 px-3 py-2 shadow-lg backdrop-blur">
         {STATS.map(({ key, emoji, color }) => (
           <div key={key} className="flex flex-col items-center gap-1">

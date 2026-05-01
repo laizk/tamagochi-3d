@@ -7,7 +7,7 @@ export function ActionBar() {
   const area = useGame((s) => s.currentArea);
   const homeOnly = area === 'home';
   return (
-    <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-10 flex justify-center p-3">
+    <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-10 flex justify-center p-3 pb-[env(safe-area-inset-bottom)]">
       <div className="flex gap-2 rounded-2xl bg-white/85 px-3 py-2 shadow-lg backdrop-blur">
         <button
           type="button"
