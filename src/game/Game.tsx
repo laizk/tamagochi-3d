@@ -59,6 +59,13 @@ export function Game() {
     };
   }, []);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      (window as unknown as Record<string, unknown>).__setArea = (a: string) =>
+        useGame.getState().setArea(a as never);
+    }
+  }, []);
+
   return (
     <div className="relative h-dvh w-dvw">
       <Canvas
