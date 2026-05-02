@@ -3,7 +3,7 @@
 import { useGame } from '@/src/game/store';
 
 export function ThoughtBubble() {
-  const stats = useGame((s) => s.dino.stats);
+  const stats = useGame((s) => s.characters[s.active].stats);
   let msg: string | null = null;
   if (stats.hunger < 25) msg = '🍔';
   else if (stats.energy < 25) msg = '💤';

@@ -22,7 +22,9 @@ export function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
   const bounceRef = useRef(bounce);
 
   useEffect(() => {
-    const unsub = onPet(() => setBounce(performance.now()));
+    const unsub = onPet((charId) => {
+      if (charId === 'dino') setBounce(performance.now());
+    });
     return () => {
       unsub();
     };
@@ -39,7 +41,7 @@ export function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
     const bouncePhase = (now - bounceRef.current) / 1000;
     const bounceY = bouncePhase < 0.6 ? Math.sin((bouncePhase * Math.PI) / 0.6) * 0.4 : 0;
 
-    const { position, stats } = useGame.getState().dino;
+    const { position, stats } = useGame.getState().characters.dino;
     ref.current.position.set(position[0], position[1] + baseY + bob + bounceY, position[2]);
 
     const sad = Math.min(stats.hunger, stats.happy, stats.energy, stats.clean, stats.health) < 25;

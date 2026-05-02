@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import type { Group, Mesh } from 'three';
 import { useGame } from '@/src/game/store';
-import { onPet } from '@/src/game/systems/interactions';
+import { onPet, pet } from '@/src/game/systems/interactions';
 import { getMood, type Mood } from '@/src/game/systems/mood';
 import { useDinoMotion } from '@/src/game/world/useDinoMotion';
 import { DinoEyes } from './DinoEyes';
@@ -27,8 +27,8 @@ export function DinoCute() {
   const lastPetAtRef = useRef<number>(NEVER_PETTED);
 
   useEffect(() => {
-    const unsub = onPet(() => {
-      lastPetAtRef.current = performance.now();
+    const unsub = onPet((charId) => {
+      if (charId === 'dino') lastPetAtRef.current = performance.now();
     });
     return () => {
       unsub();
@@ -40,7 +40,7 @@ export function DinoCute() {
 
   useFrame(() => {
     // --- mood derivation (called every frame; setState only on change) ---
-    const stats = useGame.getState().dino.stats;
+    const stats = useGame.getState().characters.dino.stats;
     const last = lastPetAtRef.current;
     const secondsSincePet =
       last === NEVER_PETTED ? Number.POSITIVE_INFINITY : (performance.now() - last) / 1000;
@@ -58,7 +58,15 @@ export function DinoCute() {
   useDinoMotion(groupRef, 0);
 
   return (
-    <group ref={groupRef}>
+    <group
+      ref={groupRef}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        const active = useGame.getState().active;
+        if (active !== 'dino') useGame.getState().setActive('dino');
+        else pet('dino');
+      }}
+    >
       {/* body */}
       <mesh position={[0, 0.55, 0]} scale={[1.0, 0.85, 1.1]} castShadow>
         <sphereGeometry args={[0.45, 24, 24]} />

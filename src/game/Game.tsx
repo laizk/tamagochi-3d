@@ -4,12 +4,14 @@ import { Canvas } from '@react-three/fiber';
 import { Suspense, useEffect, useState } from 'react';
 import { ActionBar } from '@/src/game/HUD/ActionBar';
 import { AreaName } from '@/src/game/HUD/AreaName';
+import { CharacterToggle } from '@/src/game/HUD/CharacterToggle';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
 import { Onboarding } from '@/src/game/HUD/Onboarding';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
 import { StatsBar } from '@/src/game/HUD/StatsBar';
 import { ThoughtBubble } from '@/src/game/HUD/ThoughtBubble';
 import { Welcome } from '@/src/game/HUD/Welcome';
+import { WelcomeBirds } from '@/src/game/HUD/WelcomeBirds';
 import { useGame } from '@/src/game/store';
 import { tick } from '@/src/game/systems/tick';
 import { World } from '@/src/game/world/World';
@@ -57,6 +59,13 @@ export function Game() {
     };
   }, []);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      (window as unknown as Record<string, unknown>).__setArea = (a: string) =>
+        useGame.getState().setArea(a as never);
+    }
+  }, []);
+
   return (
     <div className="relative h-dvh w-dvw">
       <Canvas
@@ -70,6 +79,7 @@ export function Game() {
         </Suspense>
       </Canvas>
       <StatsBar />
+      <CharacterToggle />
       <AreaName />
       <Welcome message={welcome} />
       <MiniMap />
@@ -77,6 +87,7 @@ export function Game() {
       <SettingsMenu />
       <ThoughtBubble />
       {needsOnboarding && <Onboarding onDone={() => setNeedsOnboarding(false)} />}
+      {!needsOnboarding && <WelcomeBirds />}
     </div>
   );
 }

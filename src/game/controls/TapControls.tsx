@@ -42,7 +42,8 @@ export function TapControls() {
 
   useFrame((_, dt) => {
     if (!target.current) return;
-    const pos = useGame.getState().dino.position;
+    const active = useGame.getState().active;
+    const pos = useGame.getState().characters[active].position;
     const dx = target.current.x - pos[0];
     const dz = target.current.z - pos[2];
     const dist = Math.hypot(dx, dz);
@@ -53,7 +54,7 @@ export function TapControls() {
     const step = Math.min(dist, MOVE_SPEED * dt);
     const nx = pos[0] + (dx / dist) * step;
     const nz = pos[2] + (dz / dist) * step;
-    useGame.getState().setPosition([nx, pos[1], nz]);
+    useGame.getState().setPosition(active, [nx, pos[1], nz]);
   });
 
   return null;

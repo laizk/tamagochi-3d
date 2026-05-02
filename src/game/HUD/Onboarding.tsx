@@ -19,6 +19,9 @@ export function Onboarding({ onDone }: Props) {
         <p className="text-center text-4xl">🥚</p>
         <p className="text-center text-lg font-bold">It's an egg!</p>
         <p className="text-center text-sm text-slate-600">What's your dino's name?</p>
+        <p className="text-center text-xs text-slate-400">
+          Tap 🐦 in the top-right to switch to your lovebirds!
+        </p>
         <input
           ref={inputRef}
           value={name}
@@ -32,7 +35,12 @@ export function Onboarding({ onDone }: Props) {
           disabled={!name.trim()}
           onClick={() => {
             const trimmed = name.trim() || 'Dino';
-            useGame.setState((s) => ({ dino: { ...s.dino, name: trimmed, stage: 'baby' } }));
+            useGame.setState((s) => ({
+              characters: {
+                ...s.characters,
+                dino: { ...s.characters.dino, name: trimmed, stage: 'baby' },
+              },
+            }));
             onDone();
           }}
           className="rounded-lg bg-emerald-500 py-2 text-lg font-bold text-white shadow disabled:bg-slate-300"
