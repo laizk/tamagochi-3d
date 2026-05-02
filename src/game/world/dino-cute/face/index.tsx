@@ -64,7 +64,12 @@ function Sparkle() {
   return (
     <mesh position={[0.16, 1.22, 0.55]}>
       <sphereGeometry args={[0.025, 8, 8]} />
-      <meshStandardMaterial color="#FFF7A0" roughness={0.2} emissive="#FFF7A0" emissiveIntensity={0.5} />
+      <meshStandardMaterial
+        color="#FFF7A0"
+        roughness={0.2}
+        emissive="#FFF7A0"
+        emissiveIntensity={0.5}
+      />
     </mesh>
   );
 }

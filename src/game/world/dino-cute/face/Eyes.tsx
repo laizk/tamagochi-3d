@@ -38,7 +38,9 @@ const BLINK_MAX = 5000;
 export function Eyes({ expression }: { expression: Expression }) {
   const variant = variantFor(expression);
   const lidRef = useRef<Mesh>(null);
-  const [nextBlinkAt, setNextBlinkAt] = useState(() => performance.now() + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN));
+  const [nextBlinkAt, setNextBlinkAt] = useState(
+    () => performance.now() + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN),
+  );
   const blinkingUntilRef = useRef(0);
 
   useFrame(() => {
