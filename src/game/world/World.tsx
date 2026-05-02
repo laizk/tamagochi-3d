@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { ActiveSceneControls } from '@/src/game/controls';
 import { useGame } from '@/src/game/store';
 import { AREAS } from '@/src/game/world/areas/registry';
+import { CameraRig } from '@/src/game/world/CameraRig';
 import { Dino } from '@/src/game/world/Dino';
 import { Lovebirds } from '@/src/game/world/Lovebirds';
 import { CloudPerch } from '@/src/game/world/props/CloudPerch';
@@ -24,11 +25,13 @@ export function World() {
       <ActiveSceneControls />
       <OrbitControls
         makeDefault
-        enablePan={false}
+        enablePan={true}
+        screenSpacePanning={false}
         maxPolarAngle={Math.PI / 2.2}
         minDistance={4}
         maxDistance={14}
       />
+      <CameraRig />
     </>
   );
 }
