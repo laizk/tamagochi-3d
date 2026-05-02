@@ -19,6 +19,9 @@ useGLTF.preload(GLB_PATH);
 // egg sphere placeholder).
 const DINO_SCALE = 0.005;
 
+// Shared position tuple type — mirrors the Dino.position field in the store.
+type Position = [number, number, number];
+
 // Minimal local type — drei's useGLTF return type is not directly exported.
 type LoadedGLTF = { scene: Group; animations: AnimationClip[] };
 
@@ -27,7 +30,10 @@ type LoadedGLTF = { scene: Group; animations: AnimationClip[] };
  * and a sad-tilt when needs are critically low.
  *
  * @param ref   - ref to the mesh/group to animate
- * @param baseY - y value to use as the resting height (e.g. sphere radius for egg, 0 for GLB)
+ * @param baseY - added to the store position's y as the vertical resting offset.
+ *                This hook owns all vertical motion (bob + bounce); callers set
+ *                `baseY` to their natural origin offset (e.g. 0.35 for a
+ *                center-origin sphere, 0 for a feet-origin GLB).
  */
 function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
   const [bounce, setBounce] = useState(0);
@@ -52,7 +58,10 @@ function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
     const bob = Math.sin(now / 400) * 0.05;
     const bouncePhase = (now - bounceRef.current) / 1000;
     const bounceY = bouncePhase < 0.6 ? Math.sin((bouncePhase * Math.PI) / 0.6) * 0.4 : 0;
-    ref.current.position.y = baseY + bob + bounceY;
+    // Use the store position y as the world baseline so both egg and GLB sit at the
+    // same height and the hook stays in sync with future position updates.
+    const storeY = useGame.getState().dino.position[1];
+    ref.current.position.y = storeY + baseY + bob + bounceY;
 
     // Read stats directly from store snapshot — no React subscription needed here.
     const stats = useGame.getState().dino.stats;
@@ -61,7 +70,7 @@ function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
   });
 }
 
-function DinoGLB({ position }: { position: [number, number, number] }) {
+function DinoGLB({ position }: { position: Position }) {
   const groupRef = useRef<Group>(null);
 
   // Cast through unknown once — drei doesn't expose a fully typed return.
@@ -98,7 +107,7 @@ function DinoGLB({ position }: { position: [number, number, number] }) {
     };
   }, [actions, gltf.animations]);
 
-  // GLB origin is at feet — baseline y is 0 (no extra offset needed).
+  // GLB origin is at feet — baseY = 0 (store y is the world baseline).
   useDinoMotion(groupRef, 0);
 
   return (
@@ -108,14 +117,21 @@ function DinoGLB({ position }: { position: [number, number, number] }) {
   );
 }
 
-function DinoEgg({ position }: { position: [number, number, number] }) {
+/**
+ * @param position - world position from the store
+ * @param baseY    - vertical offset added on top of position[1].
+ *                   Defaults to 0.35 (sphere-radius offset for the real egg stage).
+ *                   Pass 0 when used as a Suspense fallback so it sits at the
+ *                   same baseline as DinoGLB, preventing a y-pop on resolve.
+ */
+function DinoEgg({ position, baseY = 0.35 }: { position: Position; baseY?: number }) {
   const ref = useRef<Mesh>(null);
 
-  // Sphere: center-origin, so y baseline is sphere radius (0.35).
-  useDinoMotion(ref, 0.35);
+  // Sphere: center-origin, so the default y baseline is sphere radius (0.35).
+  useDinoMotion(ref, baseY);
 
   return (
-    <mesh ref={ref} position={[position[0], position[1] + 0.35, position[2]]} castShadow>
+    <mesh ref={ref} position={[position[0], position[1] + baseY, position[2]]} castShadow>
       <sphereGeometry args={[0.35, 24, 24]} />
       <meshStandardMaterial color="#f5ecd9" roughness={0.7} />
     </mesh>
@@ -132,7 +148,8 @@ export function Dino() {
   }
 
   return (
-    <Suspense fallback={<DinoEgg position={position} />}>
+    // baseY=0 aligns the fallback egg with the GLB baseline, preventing a y-pop on resolve.
+    <Suspense fallback={<DinoEgg position={position} baseY={0} />}>
       <DinoGLB position={position} />
     </Suspense>
   );
