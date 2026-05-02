@@ -9,15 +9,13 @@ describe('getMood', () => {
   });
 
   it('returns sleepy when energy is below 40 and no other stat is critical', () => {
-    expect(
-      getMood({ stats: { ...fullStats, energy: 30 }, secondsSincePet: Infinity }),
-    ).toBe('sleepy');
+    expect(getMood({ stats: { ...fullStats, energy: 30 }, secondsSincePet: Infinity })).toBe(
+      'sleepy',
+    );
   });
 
   it('returns sad when any non-energy stat is below 25', () => {
-    expect(
-      getMood({ stats: { ...fullStats, hunger: 20 }, secondsSincePet: Infinity }),
-    ).toBe('sad');
+    expect(getMood({ stats: { ...fullStats, hunger: 20 }, secondsSincePet: Infinity })).toBe('sad');
   });
 
   it('prefers sad over sleepy when both apply', () => {
@@ -31,9 +29,7 @@ describe('getMood', () => {
 
   it('returns bouncy within 1s after a pet, regardless of stats', () => {
     expect(getMood({ stats: fullStats, secondsSincePet: 0.5 })).toBe('bouncy');
-    expect(
-      getMood({ stats: { ...fullStats, hunger: 20 }, secondsSincePet: 0.5 }),
-    ).toBe('bouncy');
+    expect(getMood({ stats: { ...fullStats, hunger: 20 }, secondsSincePet: 0.5 })).toBe('bouncy');
   });
 
   it('returns to non-bouncy after 1s post-pet', () => {
@@ -41,21 +37,19 @@ describe('getMood', () => {
   });
 
   it('treats sleepy as a strict less-than-40 threshold', () => {
-    expect(
-      getMood({ stats: { ...fullStats, energy: 39 }, secondsSincePet: Infinity }),
-    ).toBe('sleepy');
-    expect(
-      getMood({ stats: { ...fullStats, energy: 40 }, secondsSincePet: Infinity }),
-    ).toBe('happy');
+    expect(getMood({ stats: { ...fullStats, energy: 39 }, secondsSincePet: Infinity })).toBe(
+      'sleepy',
+    );
+    expect(getMood({ stats: { ...fullStats, energy: 40 }, secondsSincePet: Infinity })).toBe(
+      'happy',
+    );
   });
 
   it('treats sad as a strict less-than-25 threshold', () => {
-    expect(
-      getMood({ stats: { ...fullStats, hunger: 24 }, secondsSincePet: Infinity }),
-    ).toBe('sad');
-    expect(
-      getMood({ stats: { ...fullStats, hunger: 25 }, secondsSincePet: Infinity }),
-    ).toBe('happy');
+    expect(getMood({ stats: { ...fullStats, hunger: 24 }, secondsSincePet: Infinity })).toBe('sad');
+    expect(getMood({ stats: { ...fullStats, hunger: 25 }, secondsSincePet: Infinity })).toBe(
+      'happy',
+    );
   });
 
   it('treats the bouncy boundary as inclusive at exactly 1s', () => {
