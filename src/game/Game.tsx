@@ -60,10 +60,13 @@ export function Game() {
   }, []);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      (window as unknown as Record<string, unknown>).__setArea = (a: string) =>
-        useGame.getState().setArea(a as never);
-    }
+    // E2E hooks: read-only or duplicate user-accessible actions (Map menu, etc.).
+    // Shipped in prod so Playwright runs against the same build the user sees.
+    const w = window as unknown as Record<string, unknown>;
+    w.__setArea = (a: string) => useGame.getState().setArea(a as never);
+    w.__getCharacters = () => useGame.getState().characters;
+    w.__getDinoPosition = () => useGame.getState().characters.dino.position;
+    w.__appReady = true;
   }, []);
 
   return (

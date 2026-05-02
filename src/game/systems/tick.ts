@@ -18,5 +18,9 @@ export function tick(elapsedSeconds: number, multiplier = 1): void {
     const stats = useGame.getState().characters[id].stats;
     state.setStat(id, 'health', computeHealth(stats));
     if (elapsedSeconds > 0) state.ageBy(id, elapsedSeconds);
+    const action = useGame.getState().characters[id].action;
+    if (action && performance.now() - action.startedAt >= action.durationMs) {
+      state.clearAction(id);
+    }
   }
 }

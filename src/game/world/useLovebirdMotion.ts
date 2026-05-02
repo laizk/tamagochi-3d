@@ -17,6 +17,7 @@ export function useLovebirdMotion(
   partnerRef: RefObject<Group | null>,
 ) {
   useFrame((_state, dt) => {
+    if (useGame.getState().active !== 'lovebirds') return;
     const { position } = useGame.getState().characters.lovebirds;
     const now = performance.now();
     const bob = Math.sin(now / 400) * 0.04;
@@ -38,4 +39,8 @@ export function useLovebirdMotion(
       partnerRef.current.position.lerp(target as never, Math.min(1, dt * 6));
     }
   });
+}
+
+export function getLovebirdsStorePos(): readonly [number, number, number] {
+  return useGame.getState().characters.lovebirds.position;
 }

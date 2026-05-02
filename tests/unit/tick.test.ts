@@ -31,3 +31,22 @@ describe('tick', () => {
     expect(useGame.getState().characters.dino.stats.hunger).toBe(0);
   });
 });
+
+describe('tick — action expiry', () => {
+  beforeEach(() => useGame.setState(useGame.getInitialState(), true));
+
+  it('clears action when duration has elapsed', () => {
+    useGame.getState().startAction('dino', 'eat', 1000);
+    const a = useGame.getState().characters.dino.action;
+    expect(a).not.toBeNull();
+    if (a) (a as { startedAt: number }).startedAt = performance.now() - 2000;
+    tick(0);
+    expect(useGame.getState().characters.dino.action).toBeNull();
+  });
+
+  it('keeps action while still within duration', () => {
+    useGame.getState().startAction('dino', 'eat', 5000);
+    tick(0);
+    expect(useGame.getState().characters.dino.action).not.toBeNull();
+  });
+});
