@@ -39,3 +39,7 @@ export function useLovebirdMotion(
     }
   });
 }
+
+export function getLovebirdsStorePos(): readonly [number, number, number] {
+  return useGame.getState().characters.lovebirds.position;
+}
