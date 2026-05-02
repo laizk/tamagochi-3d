@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { Suspense, useEffect, useState } from 'react';
 import { ActionBar } from '@/src/game/HUD/ActionBar';
 import { AreaName } from '@/src/game/HUD/AreaName';
+import { CharacterToggle } from '@/src/game/HUD/CharacterToggle';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
 import { Onboarding } from '@/src/game/HUD/Onboarding';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
@@ -70,6 +71,7 @@ export function Game() {
         </Suspense>
       </Canvas>
       <StatsBar />
+      <CharacterToggle />
       <AreaName />
       <Welcome message={welcome} />
       <MiniMap />
