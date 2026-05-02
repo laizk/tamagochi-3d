@@ -7,6 +7,14 @@ import { useGame } from '@/src/game/store';
 
 const WALK_FREQ_HZ = 4;
 const SPEED_THRESHOLD = 0.05;
+const WALK_ARM_AMP = 0.4;
+const WALK_LEG_LIFT = 0.06;
+const WALK_LEG_SWING = 0.2;
+const WALK_TAIL_AMP = 0.2;
+const IDLE_ARM_AMP = 0.05;
+const IDLE_TAIL_AMP = 0.08;
+const IDLE_ARM_PERIOD_MS = 500;
+const IDLE_TAIL_PERIOD_MS = 600;
 
 type Refs = {
   armL: RefObject<Mesh | null>;
@@ -36,27 +44,27 @@ export function useDinoWalkCycle({ armL, armR, legL, legR, tail }: Refs) {
     const phase = t * WALK_FREQ_HZ * Math.PI * 2;
 
     if (speed > SPEED_THRESHOLD) {
-      if (armL.current) armL.current.rotation.x = Math.sin(phase) * 0.4;
-      if (armR.current) armR.current.rotation.x = -Math.sin(phase) * 0.4;
+      if (armL.current) armL.current.rotation.x = Math.sin(phase) * WALK_ARM_AMP;
+      if (armR.current) armR.current.rotation.x = -Math.sin(phase) * WALK_ARM_AMP;
       if (legL.current) {
-        legL.current.position.y = LEG_BASE_Y + Math.sin(phase) * 0.06;
-        legL.current.rotation.x = Math.sin(phase) * 0.2;
+        legL.current.position.y = LEG_BASE_Y + Math.sin(phase) * WALK_LEG_LIFT;
+        legL.current.rotation.x = Math.sin(phase) * WALK_LEG_SWING;
       }
       if (legR.current) {
-        legR.current.position.y = LEG_BASE_Y - Math.sin(phase) * 0.06;
-        legR.current.rotation.x = -Math.sin(phase) * 0.2;
+        legR.current.position.y = LEG_BASE_Y - Math.sin(phase) * WALK_LEG_LIFT;
+        legR.current.rotation.x = -Math.sin(phase) * WALK_LEG_SWING;
       }
-      if (tail.current) tail.current.rotation.y = Math.sin(phase) * 0.2;
+      if (tail.current) tail.current.rotation.y = Math.sin(phase) * WALK_TAIL_AMP;
     } else {
       // idle: mild arm wiggle, neutral legs
-      const slow = performance.now() / 500;
+      const slow = performance.now() / IDLE_ARM_PERIOD_MS;
       if (armL.current) {
         armL.current.rotation.x = 0;
-        armL.current.rotation.z = Math.sin(slow) * 0.05;
+        armL.current.rotation.z = Math.sin(slow) * IDLE_ARM_AMP;
       }
       if (armR.current) {
         armR.current.rotation.x = 0;
-        armR.current.rotation.z = -Math.sin(slow) * 0.05;
+        armR.current.rotation.z = -Math.sin(slow) * IDLE_ARM_AMP;
       }
       if (legL.current) {
         legL.current.position.y = LEG_BASE_Y;
@@ -66,7 +74,8 @@ export function useDinoWalkCycle({ armL, armR, legL, legR, tail }: Refs) {
         legR.current.position.y = LEG_BASE_Y;
         legR.current.rotation.x = 0;
       }
-      if (tail.current) tail.current.rotation.y = Math.sin(performance.now() / 600) * 0.08;
+      if (tail.current)
+        tail.current.rotation.y = Math.sin(performance.now() / IDLE_TAIL_PERIOD_MS) * IDLE_TAIL_AMP;
     }
   });
 }

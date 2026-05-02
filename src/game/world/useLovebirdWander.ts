@@ -82,8 +82,11 @@ export function useLovebirdWander(
   });
 }
 
-// Velocity getter used by useFacing (per-bird velocity tracker for NPC mode).
-export function makeVelocityFromGroup(
+/**
+ * Returns a position getter for a Group ref.
+ * useFacing calls this getter each frame and derives velocity itself via frame-to-frame delta.
+ */
+export function makePositionFromGroup(
   ref: RefObject<Group | null>,
 ): () => readonly [number, number, number] {
   return () => {
