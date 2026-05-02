@@ -49,6 +49,9 @@ test.describe('phase 6: park decor', () => {
     page.on('pageerror', (err) => consoleErrors.push(err.message));
 
     await page.goto('/');
+    await page.waitForFunction(
+      () => (window as unknown as { __appReady?: boolean }).__appReady === true,
+    );
 
     // Navigate to park via __setArea debug hook.
     await page.evaluate(() => {
@@ -69,6 +72,9 @@ test.describe('phase 6: park decor', () => {
 
   test('park area stays rendered across several animation frames', async ({ page }) => {
     await page.goto('/');
+    await page.waitForFunction(
+      () => (window as unknown as { __appReady?: boolean }).__appReady === true,
+    );
 
     await page.evaluate(() => {
       const w = window as unknown as { __setArea?: (area: string) => void };
@@ -86,6 +92,9 @@ test.describe('phase 6: park decor', () => {
     page.on('pageerror', (err) => consoleErrors.push(err.message));
 
     await page.goto('/');
+    await page.waitForFunction(
+      () => (window as unknown as { __appReady?: boolean }).__appReady === true,
+    );
 
     await page.evaluate(() => {
       const w = window as unknown as { __setArea?: (area: string) => void };
@@ -109,6 +118,9 @@ test.describe('phase 6: park decor', () => {
     page.on('pageerror', (err) => consoleErrors.push(err.message));
 
     await page.goto('/');
+    await page.waitForFunction(
+      () => (window as unknown as { __appReady?: boolean }).__appReady === true,
+    );
 
     const areas = ['park', 'town', 'park', 'home', 'park'];
     for (const area of areas) {

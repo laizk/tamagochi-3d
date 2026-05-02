@@ -40,8 +40,9 @@ test('switching from lovebirds to dino leaves birds wandering, not orbiting clou
   });
 
   await page.goto('/');
-  // Expose store helper
-  await page.waitForFunction(() => typeof window !== 'undefined');
+  await page.waitForFunction(
+    () => (window as unknown as { __appReady?: boolean }).__appReady === true,
+  );
   await page.evaluate(() => {
     // hatch & set active to lovebirds
     const w = window as unknown as { __setArea?: (a: string) => void };

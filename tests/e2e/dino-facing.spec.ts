@@ -42,23 +42,23 @@ test('tap to the right moves the dino and rotates it to face that direction', as
   const canvas = page.locator('canvas');
   await expect(canvas).toBeVisible();
 
-  // Wait for R3F scene + dev hooks to mount.
+  // Wait for React effects (window hooks, app ready) and Suspense to settle.
   await page.waitForFunction(
-    () =>
-      typeof (window as unknown as { __getDinoPosition?: unknown }).__getDinoPosition ===
-      'function',
+    () => (window as unknown as { __appReady?: boolean }).__appReady === true,
     { timeout: 5000 },
   );
-  // Brief settle so Suspense-mounted World/Ground exists in the scene before raycasting.
-  await page.waitForTimeout(300);
+  // Suspense-mounted World/Ground: poll the scene until the canvas has rendered a frame.
+  await page.waitForTimeout(800);
 
   // Tap a bit right-and-down of canvas centre — same direction on both viewports,
-  // close enough to centre to land safely inside the 30x30 ground plane.
+  // close enough to centre to land safely inside the 30x30 ground plane. Use
+  // touchscreen.tap so mobile-emulated devices (hasTouch=true) get a real touch
+  // event, not just a synthetic mouse click that may not translate to pointer events.
   const box = await canvas.boundingBox();
   if (!box) throw new Error('canvas has no bounding box');
   const tapX = box.x + box.width * 0.7;
   const tapY = box.y + box.height * 0.55;
-  await page.mouse.click(tapX, tapY);
+  await page.touchscreen.tap(tapX, tapY);
 
   // Wait until dino has actually moved (movement is gradual at 2.2 u/s).
   await expect

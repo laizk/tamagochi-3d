@@ -49,12 +49,15 @@ test.describe('phase 5: dino action-state tap guard', () => {
     await expect(feedBtn).toBeEnabled();
     await feedBtn.click();
 
-    // While action is active, all action buttons must be disabled (dimmed + HTML disabled).
-    await expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Play' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Bath' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Sleep' })).toBeDisabled();
-    await expect(feedBtn).toBeDisabled();
+    // Run all disable checks in parallel — eat duration is short (~3s) and slow CI
+    // can't finish 5 sequential 5s-window assertions before the action expires.
+    await Promise.all([
+      expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled(),
+      expect(page.getByRole('button', { name: 'Play' })).toBeDisabled(),
+      expect(page.getByRole('button', { name: 'Bath' })).toBeDisabled(),
+      expect(page.getByRole('button', { name: 'Sleep' })).toBeDisabled(),
+      expect(feedBtn).toBeDisabled(),
+    ]);
   });
 
   test('action buttons re-enable after eat action completes', async ({ page }) => {
@@ -94,8 +97,10 @@ test.describe('phase 5: dino action-state tap guard', () => {
     await feedBtn.click();
 
     // The action should lock buttons regardless of whether hunger can increase.
-    await expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Play' })).toBeDisabled();
+    await Promise.all([
+      expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled(),
+      expect(page.getByRole('button', { name: 'Play' })).toBeDisabled(),
+    ]);
   });
 
   test('play action locks buttons and completes', async ({ page }) => {
@@ -167,7 +172,9 @@ test.describe('phase 5: lovebird wander — no teleport on character switch', ()
     await playBtn.click();
 
     // With lovebirds active + action running, pet and play must be disabled.
-    await expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled();
-    await expect(playBtn).toBeDisabled();
+    await Promise.all([
+      expect(page.getByRole('button', { name: 'Pet' })).toBeDisabled(),
+      expect(playBtn).toBeDisabled(),
+    ]);
   });
 });
