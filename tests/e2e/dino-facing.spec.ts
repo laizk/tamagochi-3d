@@ -83,11 +83,18 @@ test('tap to the right moves the dino and rotates it to face that direction', as
 
   // useFacing rotates the dino group toward travel direction (heading from xz delta).
   // After moving from origin into +x/-z quadrant, rotation.y must be a non-zero angle
-  // close to the heading atan2(dx, -dz). atan2 of (+x, +z') is in (0, π/2) for +x/-z motion.
-  const rot = (await page.evaluate(() => {
-    const w = window as unknown as { __getDinoRotationY?: () => number | null };
-    return w.__getDinoRotationY?.() ?? null;
-  })) as number | null;
-  expect(rot).not.toBeNull();
-  expect(Math.abs(rot as number)).toBeGreaterThan(0.05);
+  // close to the heading atan2(dx, -dz). Poll because lerp can lag the position read,
+  // and on slow CI rotation may apply over several frames after movement ends.
+  await expect
+    .poll(
+      async () => {
+        const r = await page.evaluate(() => {
+          const w = window as unknown as { __getDinoRotationY?: () => number | null };
+          return w.__getDinoRotationY?.() ?? 0;
+        });
+        return Math.abs(r as number);
+      },
+      { timeout: 5000, intervals: [200] },
+    )
+    .toBeGreaterThan(0.05);
 });

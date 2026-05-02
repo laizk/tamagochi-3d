@@ -3,6 +3,10 @@ import { expect, test } from '@playwright/test';
 test('switching from lovebirds to dino leaves birds wandering, not orbiting cloud', async ({
   page,
 }) => {
+  // Register error capture before navigation so we don't miss early page errors.
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+
   // Seed a hatched save to skip onboarding.
   await page.addInitScript(() => {
     const save = {
@@ -29,7 +33,7 @@ test('switching from lovebirds to dino leaves birds wandering, not orbiting clou
           position: [0, 0, 0],
         },
       },
-      currentArea: 'home',
+      currentArea: 'park',
       controlMode: 'tap',
       lastSeenAt: Date.now(),
       settings: { soundOn: false, theme: 'default' },
@@ -43,34 +47,14 @@ test('switching from lovebirds to dino leaves birds wandering, not orbiting clou
   await page.waitForFunction(
     () => (window as unknown as { __appReady?: boolean }).__appReady === true,
   );
-  await page.evaluate(() => {
-    // hatch & set active to lovebirds
-    const w = window as unknown as { __setArea?: (a: string) => void };
-    w.__setArea?.('park');
-  });
 
-  // Toggle to lovebirds using the dedicated character switch buttons.
-  const birdBtn = page.getByRole('button', { name: 'Switch to lovebirds' });
-  const dinoBtn = page.getByRole('button', { name: 'Switch to dino' });
-  await birdBtn.click().catch(() => {});
+  // Switch to lovebirds, let them wander a moment, then switch back to dino.
+  await page.getByRole('button', { name: 'Switch to lovebirds' }).click();
+  await page.waitForTimeout(800);
+  await page.getByRole('button', { name: 'Switch to dino' }).click();
+  await page.waitForTimeout(800);
 
-  await page.waitForTimeout(1500);
-
-  // Move them by tapping in park (raycast → ground hit)
-  const canvas = page.locator('canvas');
-  const box = await canvas.boundingBox();
-  if (box) await canvas.click({ position: { x: box.width * 0.7, y: box.height * 0.5 } });
-
-  await page.waitForTimeout(1500);
-
-  // Switch to dino
-  await dinoBtn.click().catch(() => {});
-
-  // After a couple of seconds, the birds should still be near the same x,z (not at cloud perch [3, 2.5, -2])
-  await page.waitForTimeout(2500);
-  // Visual smoke test — assertion is that no errors thrown; tighter assertion would require store inspection.
-  const errors: string[] = [];
-  page.on('pageerror', (e) => errors.push(e.message));
+  // No page errors during the switch.
   expect(errors).toEqual([]);
 
   const lovebirdsPos = await page.evaluate(() => {
