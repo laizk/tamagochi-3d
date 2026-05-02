@@ -15,6 +15,8 @@ export type AreaConfig = {
   Component: ComponentType;
   spawn: [number, number, number];
   exits: AreaId[];
+  /** Half-width of the square region (world units) the camera target may roam. */
+  extent: number;
   locked?: boolean;
 };
 
@@ -26,6 +28,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Home,
     spawn: [0, 0, 0],
     exits: ['town'],
+    extent: 8,
   },
   town: {
     id: 'town',
@@ -34,6 +37,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Town,
     spawn: [0, 0, 0],
     exits: ['home', 'park', 'beach', 'forest'],
+    extent: 18,
   },
   park: {
     id: 'park',
@@ -42,6 +46,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Park,
     spawn: [0, 0, 0],
     exits: ['town'],
+    extent: 16,
   },
   beach: {
     id: 'beach',
@@ -50,6 +55,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Beach,
     spawn: [0, 0, 0],
     exits: ['town', 'cave'],
+    extent: 18,
   },
   forest: {
     id: 'forest',
@@ -58,6 +64,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Forest,
     spawn: [0, 0, 0],
     exits: ['town', 'cave'],
+    extent: 16,
   },
   cave: {
     id: 'cave',
@@ -66,6 +73,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     Component: Cave,
     spawn: [0, 0, 0],
     exits: ['beach', 'forest'],
+    extent: 12,
   },
   sky: {
     id: 'sky',
@@ -75,5 +83,6 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     spawn: [0, 0, 0],
     exits: ['town'],
     locked: true,
+    extent: 14,
   },
 };
