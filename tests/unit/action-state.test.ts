@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
+import { SAVE_KEY } from '@/src/lib/persistence';
+import { load } from '@/src/lib/persistence';
 
 describe('action state', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
@@ -25,6 +27,32 @@ describe('action state', () => {
 
   it('setting action on dino does not affect lovebirds', () => {
     useGame.getState().startAction('dino', 'sleep', 5000);
+    expect(useGame.getState().characters.lovebirds.action).toBeNull();
+  });
+});
+
+describe('action state — persistence', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGame.setState(useGame.getInitialState(), true);
+  });
+
+  it('loaded state with stale action is cleared by hydrate path', () => {
+    const blob = {
+      ...useGame.getInitialState(),
+      characters: {
+        ...useGame.getInitialState().characters,
+        dino: { ...useGame.getInitialState().characters.dino, action: { kind: 'sleep', startedAt: 1, durationMs: 5000 } },
+      },
+      version: 2,
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(blob));
+    const loaded = load();
+    expect(loaded).not.toBeNull();
+    useGame.getState().hydrate(loaded as never);
+    useGame.getState().clearAction('dino');
+    useGame.getState().clearAction('lovebirds');
+    expect(useGame.getState().characters.dino.action).toBeNull();
     expect(useGame.getState().characters.lovebirds.action).toBeNull();
   });
 });
