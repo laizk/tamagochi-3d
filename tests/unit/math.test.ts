@@ -18,11 +18,8 @@ describe('lerpAngle', () => {
     // From 3.0 (just under +pi) to -3.0 (just over -pi) — short path is forward, ~0.28 rad.
     const result = lerpAngle(3.0, -3.0, 0.5);
     // Halfway should be near +pi (or equivalently -pi), NOT near 0.
-    const distToPi = Math.min(
-      Math.abs(result - Math.PI),
-      Math.abs(result + Math.PI),
-    );
-    expect(distToPi).toBeLessThan(0.2);
+    const distToPi = Math.min(Math.abs(result - Math.PI), Math.abs(result + Math.PI));
+    expect(distToPi).toBeLessThan(1e-9);
   });
 
   it('returns a when a equals b', () => {
