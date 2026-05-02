@@ -31,7 +31,10 @@ function update(
   if (!ref.current) return;
   if (active === 'lovebirds') {
     // active mode handled by useLovebirdMotion; just remember position for next anchor capture
-    state.anchor = [ref.current.position.x, ref.current.position.y, ref.current.position.z];
+    if (!state.anchor) state.anchor = [0, 0, 0];
+    state.anchor[0] = ref.current.position.x;
+    state.anchor[1] = ref.current.position.y;
+    state.anchor[2] = ref.current.position.z;
     state.target = null;
     state.pickedAt = 0;
     return;

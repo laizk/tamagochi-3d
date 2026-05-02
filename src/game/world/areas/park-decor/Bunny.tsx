@@ -9,7 +9,7 @@ const BOUND = 4;
 export function Bunny() {
   const ref = useRef<Group>(null);
   const targetRef = useRef<[number, number] | null>(null);
-  const lastJumpAt = useRef(0);
+  const lastJumpAt = useRef(performance.now());
   const lastTargetAt = useRef(0);
 
   useFrame((_state, dt) => {

@@ -51,7 +51,6 @@ export function Eyes({ expression }: { expression: Expression }) {
     if (variant === 'half') lidY = 0.5;
     if (variant === 'closed') lidY = 1;
     if (variant === 'squint') lidY = 0.7;
-    if (variant === 'wide') lidY = 0;
     if (blinkable && now >= nextBlinkAtRef.current && now > blinkingUntilRef.current) {
       blinkingUntilRef.current = now + BLINK_MS;
       nextBlinkAtRef.current = now + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN);

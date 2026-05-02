@@ -43,7 +43,7 @@ export function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
 
     const { position, stats } = useGame.getState().characters.dino;
 
-    // While an action is active, body bob/bounce still apply but xz is frozen.
+    // xz freeze comes from TapControls clearing the move target; this hook just renders the store position. Body bob/bounce always apply.
     ref.current.position.set(position[0], position[1] + baseY + bob + bounceY, position[2]);
 
     const sad = Math.min(stats.hunger, stats.happy, stats.energy, stats.clean, stats.health) < 25;

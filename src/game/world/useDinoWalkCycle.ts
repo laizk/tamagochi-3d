@@ -24,6 +24,7 @@ type Refs = {
   tail: RefObject<Mesh | null>;
 };
 
+// MUST match the leg mesh's resting position.y in DinoCute.tsx (currently 0.2).
 const LEG_BASE_Y = 0.2;
 
 /**
