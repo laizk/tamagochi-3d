@@ -38,6 +38,13 @@ export function DinoCute() {
     };
   }, []);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      (window as unknown as Record<string, unknown>).__getDinoRotationY = () =>
+        groupRef.current?.rotation.y ?? null;
+    }
+  }, []);
+
   const [mood, setMood] = useState<Mood>('happy');
 
   useFrame(() => {
@@ -115,7 +122,7 @@ export function DinoCute() {
         <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
       </mesh>
 
-      {/* legs (walk cycle) */}
+      {/* legs — y=0.2 must match LEG_BASE_Y in useDinoWalkCycle.ts */}
       <mesh ref={legLRef} position={[-0.18, 0.2, 0]} castShadow>
         <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
         <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />

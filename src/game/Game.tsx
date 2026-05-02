@@ -63,6 +63,10 @@ export function Game() {
     if (process.env.NODE_ENV !== 'production') {
       (window as unknown as Record<string, unknown>).__setArea = (a: string) =>
         useGame.getState().setArea(a as never);
+      (window as unknown as Record<string, unknown>).__getCharacters = () =>
+        useGame.getState().characters;
+      (window as unknown as Record<string, unknown>).__getDinoPosition = () =>
+        useGame.getState().characters.dino.position;
     }
   }, []);
 

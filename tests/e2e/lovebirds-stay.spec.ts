@@ -71,4 +71,15 @@ test('switching from lovebirds to dino leaves birds wandering, not orbiting clou
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   expect(errors).toEqual([]);
+
+  const lovebirdsPos = await page.evaluate(() => {
+    const w = window as unknown as {
+      __getCharacters?: () => Record<string, { position: [number, number, number] }>;
+    };
+    return w.__getCharacters?.().lovebirds.position ?? null;
+  });
+  expect(lovebirdsPos).not.toBeNull();
+  const [x, , z] = lovebirdsPos as [number, number, number];
+  // cloud perch is at [3, ?, -2] — birds should NOT be parked there
+  expect(Math.hypot(x - 3, z - -2)).toBeGreaterThan(1);
 });

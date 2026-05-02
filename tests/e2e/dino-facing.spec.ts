@@ -1,0 +1,93 @@
+import { expect, test } from '@playwright/test';
+
+test('tap to the right moves the dino and rotates it to face that direction', async ({ page }) => {
+  await page.addInitScript(() => {
+    const blob = {
+      active: 'dino',
+      characters: {
+        dino: {
+          id: 'dino-1',
+          name: 'Dino',
+          species: 'dino',
+          skinId: 'default',
+          stage: 'baby',
+          age: 0,
+          stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
+          position: [0, 0, 0],
+          action: null,
+        },
+        lovebirds: {
+          id: 'lovebirds-1',
+          name: 'Lovebirds',
+          species: 'lovebirds',
+          skinId: 'default',
+          stage: 'baby',
+          age: 0,
+          stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
+          position: [0, 0, 0],
+          action: null,
+        },
+      },
+      currentArea: 'park',
+      controlMode: 'tap',
+      lastSeenAt: Date.now(),
+      settings: { soundOn: true, theme: 'default' },
+      intro: { lovebirdsSeen: true },
+      version: 2,
+    };
+    localStorage.setItem('tamagochi-3d:save:v2', JSON.stringify(blob));
+  });
+
+  await page.goto('/');
+  const canvas = page.locator('canvas');
+  await expect(canvas).toBeVisible();
+
+  // Wait for R3F scene + dev hooks to mount.
+  await page.waitForFunction(
+    () =>
+      typeof (window as unknown as { __getDinoPosition?: unknown }).__getDinoPosition ===
+      'function',
+    { timeout: 5000 },
+  );
+  // Brief settle so Suspense-mounted World/Ground exists in the scene before raycasting.
+  await page.waitForTimeout(300);
+
+  // Tap a bit right-and-down of canvas centre — same direction on both viewports,
+  // close enough to centre to land safely inside the 30x30 ground plane.
+  const box = await canvas.boundingBox();
+  if (!box) throw new Error('canvas has no bounding box');
+  const tapX = box.x + box.width * 0.7;
+  const tapY = box.y + box.height * 0.55;
+  await page.mouse.click(tapX, tapY);
+
+  // Wait until dino has actually moved (movement is gradual at 2.2 u/s).
+  await expect
+    .poll(
+      async () => {
+        const pos = await page.evaluate(() => {
+          const w = window as unknown as { __getDinoPosition?: () => [number, number, number] };
+          return w.__getDinoPosition?.() ?? [0, 0, 0];
+        });
+        return Math.hypot(pos[0], pos[2]);
+      },
+      { timeout: 5000, intervals: [200] },
+    )
+    .toBeGreaterThan(0.5);
+
+  const pos = (await page.evaluate(() => {
+    const w = window as unknown as { __getDinoPosition?: () => [number, number, number] };
+    return w.__getDinoPosition?.() ?? null;
+  })) as [number, number, number];
+  // Tap landed on +x side, so dino should have moved to +x.
+  expect(pos[0]).toBeGreaterThan(0);
+
+  // useFacing rotates the dino group toward travel direction (heading from xz delta).
+  // After moving from origin into +x/-z quadrant, rotation.y must be a non-zero angle
+  // close to the heading atan2(dx, -dz). atan2 of (+x, +z') is in (0, π/2) for +x/-z motion.
+  const rot = (await page.evaluate(() => {
+    const w = window as unknown as { __getDinoRotationY?: () => number | null };
+    return w.__getDinoRotationY?.() ?? null;
+  })) as number | null;
+  expect(rot).not.toBeNull();
+  expect(Math.abs(rot as number)).toBeGreaterThan(0.05);
+});
