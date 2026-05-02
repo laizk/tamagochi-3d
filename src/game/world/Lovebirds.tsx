@@ -20,13 +20,17 @@ export function Lovebirds() {
   const active = useGame((s) => s.active);
   const leaderRef = useRef<Group>(null);
   const partnerRef = useRef<Group>(null);
-  const lastPetAtBird = useRef<{ leader: number; partner: number }>({ leader: NaN, partner: NaN });
+  const [spinAtLeader, setSpinAtLeader] = useState<number>(NaN);
+  const [spinAtPartner, setSpinAtPartner] = useState<number>(NaN);
   const [mood, setMood] = useState<Mood>('happy');
 
   useEffect(() => {
     const unsub = onPet((charId) => {
       if (charId !== 'lovebirds') return;
-      // We do not know which bird was tapped here; the click handler sets it.
+      // ActionBar pet button: spin both birds.
+      const ts = performance.now();
+      setSpinAtLeader(ts);
+      setSpinAtPartner(ts);
     });
     return () => {
       unsub();
@@ -64,7 +68,7 @@ export function Lovebirds() {
       useGame.getState().setActive('lovebirds');
       return;
     }
-    lastPetAtBird.current.leader = performance.now();
+    setSpinAtLeader(performance.now());
     pet('lovebirds');
   };
   const onPartnerClick = () => {
@@ -72,7 +76,7 @@ export function Lovebirds() {
       useGame.getState().setActive('lovebirds');
       return;
     }
-    lastPetAtBird.current.partner = performance.now();
+    setSpinAtPartner(performance.now());
     pet('lovebirds');
   };
 
@@ -86,7 +90,7 @@ export function Lovebirds() {
         bottomColor={BIRD1.bottom}
         mood={mood}
         flapHz={flapHz}
-        spinAt={lastPetAtBird.current.leader}
+        spinAt={spinAtLeader}
         onClick={onLeaderClick}
       />
       <Lovebird
@@ -95,7 +99,7 @@ export function Lovebirds() {
         bottomColor={BIRD2.bottom}
         mood={mood}
         flapHz={flapHz}
-        spinAt={lastPetAtBird.current.partner}
+        spinAt={spinAtPartner}
         onClick={onPartnerClick}
       />
     </>
