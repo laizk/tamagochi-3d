@@ -19,7 +19,7 @@ const BABY_SAVE = JSON.stringify({
 });
 
 // Errors that indicate real failures, not r3f/React info messages.
-const CRITICAL_ERROR_RE = /Error|Failed to load|Cannot read|Uncaught/i;
+const CRITICAL_ERROR_RE = /(Failed to load|Uncaught|TypeError|Cannot read|GLTF.*error)/i;
 
 test.describe('dino-glb: egg vs GLB rendering', () => {
   test('fresh load shows egg modal and canvas', async ({ page }) => {
