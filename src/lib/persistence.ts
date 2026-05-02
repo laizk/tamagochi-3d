@@ -1,13 +1,29 @@
-import { type GameState, useGame } from '@/src/game/store';
+import {
+  type GameState,
+  type Pet,
+  INITIAL_DINO,
+  INITIAL_LOVEBIRDS,
+  useGame,
+} from '@/src/game/store';
 
+export const SAVE_KEY_V1 = 'tamagochi-3d:save:v1';
 export const SAVE_KEY = 'tamagochi-3d:save:v2';
 
-type SaveBlob = GameState;
+type V1Blob = {
+  dino: Pet;
+  currentArea: GameState['currentArea'];
+  controlMode: GameState['controlMode'];
+  lastSeenAt: number;
+  settings: GameState['settings'];
+  version: 1;
+};
+
+type V2Blob = GameState;
 
 export function save(): void {
   if (typeof localStorage === 'undefined') return;
   const state = useGame.getState();
-  const blob: SaveBlob = {
+  const blob: V2Blob = {
     active: state.active,
     characters: state.characters,
     currentArea: state.currentArea,
@@ -22,23 +38,47 @@ export function save(): void {
 
 export function load(): GameState | null {
   if (typeof localStorage === 'undefined') return null;
-  const raw = localStorage.getItem(SAVE_KEY);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as SaveBlob;
-    return migrate(parsed);
-  } catch {
-    localStorage.setItem(`${SAVE_KEY}:corrupt:${Date.now()}`, raw);
-    localStorage.removeItem(SAVE_KEY);
-    return null;
-  }
-}
 
-function migrate(blob: unknown): GameState | null {
-  if (typeof blob !== 'object' || blob === null) return null;
-  const b = blob as Partial<GameState>;
-  if (b.version === 2) return b as GameState;
-  // Future versions handled here.
+  const v2raw = localStorage.getItem(SAVE_KEY);
+  if (v2raw) {
+    try {
+      const parsed = JSON.parse(v2raw) as V2Blob;
+      if (parsed.version === 2) return parsed;
+    } catch {
+      localStorage.setItem(`${SAVE_KEY}:corrupt:${Date.now()}`, v2raw);
+      localStorage.removeItem(SAVE_KEY);
+    }
+  }
+
+  const v1raw = localStorage.getItem(SAVE_KEY_V1);
+  if (v1raw) {
+    try {
+      const v1 = JSON.parse(v1raw) as V1Blob;
+      if (v1.version === 1 && v1.dino) {
+        const migrated: V2Blob = {
+          active: 'dino',
+          characters: {
+            dino: { ...INITIAL_DINO(), ...v1.dino, species: 'dino' },
+            lovebirds: INITIAL_LOVEBIRDS(),
+          },
+          currentArea: v1.currentArea,
+          controlMode: v1.controlMode,
+          lastSeenAt: v1.lastSeenAt,
+          settings: v1.settings,
+          intro: { lovebirdsSeen: false },
+          version: 2,
+        };
+        localStorage.setItem(`${SAVE_KEY_V1}.bak`, v1raw);
+        localStorage.setItem(SAVE_KEY, JSON.stringify(migrated));
+        localStorage.removeItem(SAVE_KEY_V1);
+        return migrated;
+      }
+    } catch {
+      localStorage.setItem(`${SAVE_KEY_V1}:corrupt:${Date.now()}`, v1raw);
+      localStorage.removeItem(SAVE_KEY_V1);
+    }
+  }
+
   return null;
 }
 
