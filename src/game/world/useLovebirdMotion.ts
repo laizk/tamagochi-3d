@@ -17,6 +17,7 @@ export function useLovebirdMotion(
   partnerRef: RefObject<Group | null>,
 ) {
   useFrame((_state, dt) => {
+    if (useGame.getState().active !== 'lovebirds') return;
     const { position } = useGame.getState().characters.lovebirds;
     const now = performance.now();
     const bob = Math.sin(now / 400) * 0.04;

@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import type { Group } from 'three';
 import { useGame } from '@/src/game/store';
-import { chooseExpression } from '@/src/game/systems/expression';
 import { onPet, pet } from '@/src/game/systems/interactions';
 import { getMood, type Mood } from '@/src/game/systems/mood';
 import { Lovebird } from '@/src/game/world/lovebird-cute/Lovebird';
@@ -38,10 +37,8 @@ export function Lovebirds() {
 
   useFrame(() => {
     const stats = useGame.getState().characters.lovebirds.stats;
-    const action = useGame.getState().characters.lovebirds.action;
     const next = getMood({ stats, secondsSincePet: NEVER });
     if (next !== mood) setMood(next);
-    void action;
   });
 
   // Active mode: leader follows store, partner trails
@@ -51,21 +48,11 @@ export function Lovebirds() {
 
   // Facing — leader uses store position in active mode and own velocity in NPC mode.
   // Single hook switching getter based on active.
+  const leaderPosGetter = makePositionFromGroup(leaderRef);
   useFacing(leaderRef, () =>
-    useGame.getState().active === 'lovebirds'
-      ? getLovebirdsStorePos()
-      : leaderRef.current
-        ? ([
-            leaderRef.current.position.x,
-            leaderRef.current.position.y,
-            leaderRef.current.position.z,
-          ] as const)
-        : ([0, 0, 0] as const),
+    useGame.getState().active === 'lovebirds' ? getLovebirdsStorePos() : leaderPosGetter(),
   );
   useFacing(partnerRef, makePositionFromGroup(partnerRef));
-
-  const action = useGame((s) => s.characters.lovebirds.action);
-  const expression = chooseExpression(mood, action?.kind ?? null);
 
   const onLeaderClick = () => {
     const a = useGame.getState().characters.lovebirds.action;
@@ -92,11 +79,12 @@ export function Lovebirds() {
 
   return (
     <>
+      {/* TODO: extend Lovebird face to Expression so action states (eat/bath/sleep/play) show up. For now action only locks input. */}
       <Lovebird
         groupRef={leaderRef}
         topColor={BIRD1.top}
         bottomColor={BIRD1.bottom}
-        mood={expression as Mood}
+        mood={mood}
         flapHz={flapHz}
         spinAt={spinAtLeader}
         onClick={onLeaderClick}
@@ -105,7 +93,7 @@ export function Lovebirds() {
         groupRef={partnerRef}
         topColor={BIRD2.top}
         bottomColor={BIRD2.bottom}
-        mood={expression as Mood}
+        mood={mood}
         flapHz={flapHz}
         spinAt={spinAtPartner}
         onClick={onPartnerClick}

@@ -63,98 +63,96 @@ export function DinoCute() {
   useFacing(groupRef, () => useGame.getState().characters.dino.position);
 
   return (
-    <>
-      <group
-        ref={groupRef}
-        onPointerDown={(e) => {
-          e.stopPropagation();
-          const a = useGame.getState().characters.dino.action;
-          if (a !== null) return;
-          const active = useGame.getState().active;
-          if (active !== 'dino') useGame.getState().setActive('dino');
-          else pet('dino');
-        }}
-      >
-        {/* body */}
-        <mesh position={[0, 0.55, 0]} scale={[1.0, 0.85, 1.1]} castShadow>
-          <sphereGeometry args={[0.45, 24, 24]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
+    <group
+      ref={groupRef}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        const a = useGame.getState().characters.dino.action;
+        if (a !== null) return;
+        const active = useGame.getState().active;
+        if (active !== 'dino') useGame.getState().setActive('dino');
+        else pet('dino');
+      }}
+    >
+      {/* body */}
+      <mesh position={[0, 0.55, 0]} scale={[1.0, 0.85, 1.1]} castShadow>
+        <sphereGeometry args={[0.45, 24, 24]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* belly patch */}
-        <mesh position={[0, 0.5, 0.18]} scale={[1, 0.9, 0.4]}>
-          <sphereGeometry args={[0.32, 20, 20]} />
-          <meshStandardMaterial color={BELLY_COLOR} roughness={0.7} />
-        </mesh>
+      {/* belly patch */}
+      <mesh position={[0, 0.5, 0.18]} scale={[1, 0.9, 0.4]}>
+        <sphereGeometry args={[0.32, 20, 20]} />
+        <meshStandardMaterial color={BELLY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* head */}
-        <mesh position={[0, 1.05, 0.25]} castShadow>
-          <sphereGeometry args={[0.32, 24, 24]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
+      {/* head */}
+      <mesh position={[0, 1.05, 0.25]} castShadow>
+        <sphereGeometry args={[0.32, 24, 24]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* cheeks */}
-        <mesh position={[-0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
-          <sphereGeometry args={[0.07, 16, 16]} />
-          <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
-        </mesh>
-        <mesh position={[0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
-          <sphereGeometry args={[0.07, 16, 16]} />
-          <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
-        </mesh>
+      {/* cheeks */}
+      <mesh position={[-0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
+        <sphereGeometry args={[0.07, 16, 16]} />
+        <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
+      </mesh>
+      <mesh position={[0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
+        <sphereGeometry args={[0.07, 16, 16]} />
+        <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
+      </mesh>
 
-        {/* face — snout, jaw, eyes, brows, tongue, extras */}
-        <DinoFace expression={expression} />
+      {/* face — snout, jaw, eyes, brows, tongue, extras */}
+      <DinoFace expression={expression} />
 
-        {/* arms (walk cycle) */}
-        <mesh ref={armLRef} position={[-0.42, 0.55, 0.05]} castShadow>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh ref={armRRef} position={[0.42, 0.55, 0.05]} castShadow>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
+      {/* arms (walk cycle) */}
+      <mesh ref={armLRef} position={[-0.42, 0.55, 0.05]} castShadow>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh ref={armRRef} position={[0.42, 0.55, 0.05]} castShadow>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* legs (walk cycle) */}
-        <mesh ref={legLRef} position={[-0.18, 0.2, 0]} castShadow>
-          <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh ref={legRRef} position={[0.18, 0.2, 0]} castShadow>
-          <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
+      {/* legs (walk cycle) */}
+      <mesh ref={legLRef} position={[-0.18, 0.2, 0]} castShadow>
+        <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh ref={legRRef} position={[0.18, 0.2, 0]} castShadow>
+        <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* tail */}
-        <mesh position={[0, 0.5, -0.45]} castShadow>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh position={[0, 0.45, -0.65]} castShadow>
-          <sphereGeometry args={[0.13, 16, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh ref={tailRef} position={[0, 0.4, -0.8]} castShadow>
-          <sphereGeometry args={[0.09, 16, 16]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
+      {/* tail */}
+      <mesh position={[0, 0.5, -0.45]} castShadow>
+        <sphereGeometry args={[0.18, 16, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.45, -0.65]} castShadow>
+        <sphereGeometry args={[0.13, 16, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh ref={tailRef} position={[0, 0.4, -0.8]} castShadow>
+        <sphereGeometry args={[0.09, 16, 16]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
 
-        {/* back bumps */}
-        <mesh position={[0, 0.95, -0.1]} castShadow>
-          <coneGeometry args={[0.06, 0.1, 12]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh position={[0, 0.95, -0.3]} castShadow>
-          <coneGeometry args={[0.07, 0.12, 12]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-        <mesh position={[0, 0.7, -0.5]} castShadow>
-          <coneGeometry args={[0.05, 0.08, 12]} />
-          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-        </mesh>
-      </group>
+      {/* back bumps */}
+      <mesh position={[0, 0.95, -0.1]} castShadow>
+        <coneGeometry args={[0.06, 0.1, 12]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.95, -0.3]} castShadow>
+        <coneGeometry args={[0.07, 0.12, 12]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.7, -0.5]} castShadow>
+        <coneGeometry args={[0.05, 0.08, 12]} />
+        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+      </mesh>
       <PlayBall />
-    </>
+    </group>
   );
 }
