@@ -26,8 +26,6 @@ export function Game() {
     const loaded = load();
     if (loaded) {
       useGame.getState().hydrate(loaded);
-      useGame.getState().clearAction('dino');
-      useGame.getState().clearAction('lovebirds');
       const summary = applyOfflineDrain(loaded.lastSeenAt);
       if (summary.biggestDrop !== 'okay') {
         setWelcome(`Dino is ${summary.biggestDrop}!`);

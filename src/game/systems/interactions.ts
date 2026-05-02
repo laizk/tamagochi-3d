@@ -28,6 +28,7 @@ export const BIRD_FOODS: Record<BirdFoodId, FoodDef> = {
 };
 
 export function feed(food: FoodId, charId: CharacterId): void {
+  if (useGame.getState().characters[charId].action) return;
   const def =
     charId === 'dino'
       ? (FOODS as Record<string, FoodDef>)[food]
@@ -70,6 +71,7 @@ export function pet(charId: CharacterId): void {
 }
 
 export function bath(charId: CharacterId): void {
+  if (useGame.getState().characters[charId].action) return;
   const s = useGame.getState();
   s.applyStatDelta(charId, 'clean', 50);
   s.applyStatDelta(charId, 'happy', -5);
@@ -77,12 +79,14 @@ export function bath(charId: CharacterId): void {
 }
 
 export function sleep(charId: CharacterId): void {
+  if (useGame.getState().characters[charId].action) return;
   const s = useGame.getState();
   s.applyStatDelta(charId, 'energy', 60);
   s.startAction(charId, 'sleep', ACTION_DURATION_MS.sleep);
 }
 
 export function play(charId: CharacterId): void {
+  if (useGame.getState().characters[charId].action) return;
   const s = useGame.getState();
   s.applyStatDelta(charId, 'happy', 20);
   s.applyStatDelta(charId, 'energy', -10);

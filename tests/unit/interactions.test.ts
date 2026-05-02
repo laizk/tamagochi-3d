@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
-import { FOODS, bath, feed, pet, play, sleep } from '@/src/game/systems/interactions';
+import { bath, FOODS, feed, pet, play, sleep } from '@/src/game/systems/interactions';
 
 describe('feed', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
@@ -65,5 +65,44 @@ describe('action triggers', () => {
   it('pet does NOT start an action', () => {
     pet('dino');
     expect(useGame.getState().characters.dino.action).toBeNull();
+  });
+});
+
+describe('action guard', () => {
+  beforeEach(() => useGame.setState(useGame.getInitialState(), true));
+
+  it('feed is a no-op when an action is already active', () => {
+    useGame.getState().setStat('dino', 'hunger', 50);
+    useGame.getState().startAction('dino', 'sleep', 5000);
+    feed('apple', 'dino');
+    // hunger unchanged, action still sleep
+    expect(useGame.getState().characters.dino.stats.hunger).toBe(50);
+    expect(useGame.getState().characters.dino.action?.kind).toBe('sleep');
+  });
+
+  it('bath is a no-op when an action is already active', () => {
+    useGame.getState().setStat('dino', 'clean', 30);
+    useGame.getState().startAction('dino', 'eat', 3000);
+    bath('dino');
+    expect(useGame.getState().characters.dino.stats.clean).toBe(30);
+    expect(useGame.getState().characters.dino.action?.kind).toBe('eat');
+  });
+
+  it('sleep is a no-op when an action is already active', () => {
+    useGame.getState().setStat('dino', 'energy', 20);
+    useGame.getState().startAction('dino', 'play', 4000);
+    sleep('dino');
+    expect(useGame.getState().characters.dino.stats.energy).toBe(20);
+    expect(useGame.getState().characters.dino.action?.kind).toBe('play');
+  });
+
+  it('play is a no-op when an action is already active', () => {
+    useGame.getState().setStat('dino', 'happy', 50);
+    useGame.getState().setStat('dino', 'energy', 50);
+    useGame.getState().startAction('dino', 'eat', 3000);
+    play('dino');
+    expect(useGame.getState().characters.dino.stats.happy).toBe(50);
+    expect(useGame.getState().characters.dino.stats.energy).toBe(50);
+    expect(useGame.getState().characters.dino.action?.kind).toBe('eat');
   });
 });

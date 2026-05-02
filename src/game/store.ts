@@ -11,7 +11,7 @@ export type CharacterId = 'dino' | 'lovebirds';
 export type Species = 'dino' | 'lovebirds';
 
 export type ActionKind = 'eat' | 'bath' | 'sleep' | 'play';
-export type Action = { kind: ActionKind; startedAt: number; durationMs: number } | null;
+export type Action = { kind: ActionKind; startedAt: number; durationMs: number };
 
 export type Pet = {
   id: string;
@@ -22,7 +22,7 @@ export type Pet = {
   age: number; // seconds
   stats: Record<StatKey, Stat>;
   position: [number, number, number];
-  action: Action;
+  action: Action | null;
 };
 
 // Backwards-friendly alias for any existing imports.

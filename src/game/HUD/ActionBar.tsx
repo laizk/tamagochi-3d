@@ -20,7 +20,7 @@ export function ActionBar() {
   const homeOnly = area === 'home';
   const menu = active === 'dino' ? FOODS : BIRD_FOODS;
   const locked = action !== null;
-  const dim = locked ? 'opacity-40 pointer-events-none' : '';
+  const dim = locked ? 'opacity-40' : '';
 
   return (
     <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-10 flex justify-center p-3 pb-[env(safe-area-inset-bottom)]">

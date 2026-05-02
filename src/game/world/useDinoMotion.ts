@@ -41,15 +41,12 @@ export function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
     const bouncePhase = (now - bounceRef.current) / 1000;
     const bounceY = bouncePhase < 0.6 ? Math.sin((bouncePhase * Math.PI) / 0.6) * 0.4 : 0;
 
-    const { position, stats, action } = useGame.getState().characters.dino;
+    const { position, stats } = useGame.getState().characters.dino;
 
     // While an action is active, body bob/bounce still apply but xz is frozen.
     ref.current.position.set(position[0], position[1] + baseY + bob + bounceY, position[2]);
 
     const sad = Math.min(stats.hunger, stats.happy, stats.energy, stats.clean, stats.health) < 25;
     ref.current.rotation.x = sad ? 0.2 : 0;
-
-    // Hint exposed for walk cycle / facing hooks to short-circuit.
-    void action;
   });
 }

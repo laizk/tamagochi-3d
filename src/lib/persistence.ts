@@ -25,7 +25,10 @@ export function save(): void {
   const state = useGame.getState();
   const blob: V2Blob = {
     active: state.active,
-    characters: state.characters,
+    characters: {
+      dino: { ...state.characters.dino, action: null },
+      lovebirds: { ...state.characters.lovebirds, action: null },
+    },
     currentArea: state.currentArea,
     controlMode: state.controlMode,
     lastSeenAt: Date.now(),
@@ -43,7 +46,11 @@ export function load(): GameState | null {
   if (v2raw) {
     try {
       const parsed = JSON.parse(v2raw) as V2Blob;
-      if (parsed.version === 2) return parsed;
+      if (parsed.version === 2) {
+        parsed.characters.dino.action = null;
+        parsed.characters.lovebirds.action = null;
+        return parsed;
+      }
     } catch {
       localStorage.setItem(`${SAVE_KEY}:corrupt:${Date.now()}`, v2raw);
       localStorage.removeItem(SAVE_KEY);

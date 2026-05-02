@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
-import { SAVE_KEY } from '@/src/lib/persistence';
-import { load } from '@/src/lib/persistence';
+import { load, SAVE_KEY } from '@/src/lib/persistence';
 
 describe('action state', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
@@ -37,12 +36,16 @@ describe('action state — persistence', () => {
     useGame.setState(useGame.getInitialState(), true);
   });
 
-  it('loaded state with stale action is cleared by hydrate path', () => {
+  it('loaded state with stale action is cleared by the persistence layer', () => {
+    const initial = useGame.getInitialState();
     const blob = {
-      ...useGame.getInitialState(),
+      ...initial,
       characters: {
-        ...useGame.getInitialState().characters,
-        dino: { ...useGame.getInitialState().characters.dino, action: { kind: 'sleep', startedAt: 1, durationMs: 5000 } },
+        ...initial.characters,
+        dino: {
+          ...initial.characters.dino,
+          action: { kind: 'sleep', startedAt: 1, durationMs: 5000 },
+        },
       },
       version: 2,
     };
@@ -50,8 +53,6 @@ describe('action state — persistence', () => {
     const loaded = load();
     expect(loaded).not.toBeNull();
     useGame.getState().hydrate(loaded as never);
-    useGame.getState().clearAction('dino');
-    useGame.getState().clearAction('lovebirds');
     expect(useGame.getState().characters.dino.action).toBeNull();
     expect(useGame.getState().characters.lovebirds.action).toBeNull();
   });
