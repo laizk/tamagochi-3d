@@ -3,6 +3,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import type { Group, Mesh } from 'three';
+import { DoubleSide } from 'three';
 
 const BUTTERFLIES: Array<{ center: [number, number, number]; color: string; offset: number }> = [
   { center: [2, 1.5, 1], color: '#FF7AB6', offset: 0 },
@@ -25,7 +26,7 @@ function Wing({
   return (
     <mesh ref={flapRef} position={[0.05 * side, 0, 0]}>
       <planeGeometry args={[0.18, 0.14]} />
-      <meshStandardMaterial color={color} side={2} roughness={0.5} />
+      <meshStandardMaterial color={color} side={DoubleSide} roughness={0.5} />
     </mesh>
   );
 }

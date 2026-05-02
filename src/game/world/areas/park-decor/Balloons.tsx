@@ -17,19 +17,35 @@ const BALLOONS: Array<{
 
 const RESET_AT_Y = 8;
 const RANGE = RESET_AT_Y - 0.5;
+const X_SPREAD = 7;
+const Z_SPREAD = 7;
 
 export function Balloons() {
   const refs = useRef<Array<Group | null>>([]);
+  const lastPhase = useRef<number[]>(BALLOONS.map(() => 0));
+  const anchors = useRef<Array<[number, number]>>(BALLOONS.map((b) => [b.start[0], b.start[2]]));
+
   useFrame(() => {
     const t = performance.now() / 1000;
     refs.current.forEach((g, i) => {
       if (!g) return;
       const b = BALLOONS[i];
       const phase = (t * b.speed + b.offset) % 1;
+      // wrap detection: phase decreased from previous frame → randomize anchor
+      if (phase < lastPhase.current[i]) {
+        anchors.current[i] = [
+          (Math.random() * 2 - 1) * X_SPREAD,
+          (Math.random() * 2 - 1) * Z_SPREAD,
+        ];
+      }
+      lastPhase.current[i] = phase;
+      const [ax, az] = anchors.current[i];
+      g.position.x = ax + Math.sin(t + b.offset) * 0.2;
       g.position.y = b.start[1] + phase * RANGE;
-      g.position.x = b.start[0] + Math.sin(t + b.offset) * 0.2;
+      g.position.z = az;
     });
   });
+
   return (
     <>
       {BALLOONS.map((b, i) => (

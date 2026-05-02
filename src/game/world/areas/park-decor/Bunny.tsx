@@ -32,7 +32,7 @@ export function Bunny() {
     }
     // hop every 2 s
     const phase = (now - lastJumpAt.current) / 1000;
-    if (phase > 2) lastJumpAt.current = now;
+    if (phase > 2) lastJumpAt.current += 2000;
     const hopPhase = ((now - lastJumpAt.current) / 1000) % 2;
     cur.y = hopPhase < 0.4 ? Math.sin((hopPhase * Math.PI) / 0.4) * 0.3 : 0;
   });
