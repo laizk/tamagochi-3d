@@ -169,8 +169,8 @@ Mounted inside `<World>` after `<OrbitControls makeDefault>` so `useThree(s => s
 
 **E2E (`tests/e2e/`, mobile viewport)**
 
-- Existing tests still pass (no regressions in tap-to-move or joystick).
-- Add 1 smoke: switch active character, assert camera target tracks (expose `(window as any).__controls = controls` in dev mode for the test).
+- Existing tests still pass (no regressions in tap-to-move, joystick, or character switch).
+- Camera-target recentering is verified via manual QA (below) rather than a new e2e — exposing `controls` on `window` only for testing isn't worth the runtime pollution.
 
 **Manual mobile-viewport sanity (dino-qa)**
 
