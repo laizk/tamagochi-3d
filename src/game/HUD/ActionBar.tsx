@@ -1,7 +1,7 @@
 'use client';
 
 import { useGame } from '@/src/game/store';
-import { FOODS, type FoodId, bath, feed, pet, sleep } from '@/src/game/systems/interactions';
+import { FOODS, type DinoFoodId, bath, feed, pet, sleep } from '@/src/game/systems/interactions';
 
 export function ActionBar() {
   const area = useGame((s) => s.currentArea);
@@ -20,7 +20,7 @@ export function ActionBar() {
         </button>
         {homeOnly && (
           <>
-            {(Object.keys(FOODS) as FoodId[]).map((id) => (
+            {(Object.keys(FOODS) as DinoFoodId[]).map((id) => (
               <button
                 key={id}
                 type="button"
