@@ -17,10 +17,11 @@ export function Joystick() {
     const loop = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      const pos = useGame.getState().dino.position;
+      const active = useGame.getState().active;
+      const pos = useGame.getState().characters[active].position;
       const nx = pos[0] + vec.x * MOVE_SPEED * dt;
       const nz = pos[2] + vec.y * MOVE_SPEED * dt;
-      useGame.getState().setPosition([nx, pos[1], nz]);
+      useGame.getState().setPosition(active, [nx, pos[1], nz]);
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);

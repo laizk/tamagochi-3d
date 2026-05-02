@@ -9,9 +9,9 @@ export function tick(elapsedSeconds: number, multiplier = 1): void {
   const state = useGame.getState();
   for (const k of ACTIONABLE) {
     const v = delta[k];
-    if (v !== undefined) state.applyStatDelta(k, v);
+    if (v !== undefined) state.applyStatDelta('dino', k, v);
   }
-  const stats = useGame.getState().dino.stats;
-  state.setStat('health', computeHealth(stats));
-  if (elapsedSeconds > 0) state.ageBy(elapsedSeconds);
+  const stats = useGame.getState().characters.dino.stats;
+  state.setStat('dino', 'health', computeHealth(stats));
+  if (elapsedSeconds > 0) state.ageBy('dino', elapsedSeconds);
 }

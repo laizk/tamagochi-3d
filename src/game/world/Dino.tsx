@@ -8,7 +8,6 @@ import { useDinoMotion } from '@/src/game/world/useDinoMotion';
 
 function DinoEgg() {
   const ref = useRef<Mesh>(null);
-  // Sphere is center-origin, so baseY is sphere radius (0.5).
   useDinoMotion(ref, 0.5);
   return (
     <mesh ref={ref} castShadow>
@@ -19,7 +18,7 @@ function DinoEgg() {
 }
 
 export function Dino() {
-  const stage = useGame((s) => s.dino.stage);
+  const stage = useGame((s) => s.characters.dino.stage);
   if (stage === 'egg') return <DinoEgg />;
   return <DinoCute />;
 }

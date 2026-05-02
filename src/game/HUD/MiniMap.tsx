@@ -8,6 +8,7 @@ export function MiniMap() {
   const [open, setOpen] = useState(false);
   const current = useGame((s) => s.currentArea);
   const setArea = useGame((s) => s.setArea);
+  const active = useGame((s) => s.active);
   const setPosition = useGame((s) => s.setPosition);
   return (
     <>
@@ -28,7 +29,7 @@ export function MiniMap() {
               disabled={a.locked}
               onClick={() => {
                 setArea(a.id);
-                setPosition(a.spawn);
+                setPosition(active, a.spawn);
                 setOpen(false);
               }}
               className={`flex flex-col items-center rounded-lg px-3 py-2 ${

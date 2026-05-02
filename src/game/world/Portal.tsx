@@ -23,13 +23,15 @@ export function Portal({ to, position }: Props) {
 
   useFrame(() => {
     if (targetLocked) return;
-    const dino = useGame.getState().dino.position;
-    const dx = dino[0] - position[0];
-    const dz = dino[2] - position[2];
+    const state = useGame.getState();
+    const active = state.active;
+    const charPos = state.characters[active].position;
+    const dx = charPos[0] - position[0];
+    const dz = charPos[2] - position[2];
     if (Math.hypot(dx, dz) < 1) {
       const target = AREAS[to];
       setArea(to);
-      setPosition(target.spawn);
+      setPosition(active, target.spawn);
     }
   });
 
@@ -39,8 +41,9 @@ export function Portal({ to, position }: Props) {
       position={position}
       onPointerDown={() => {
         if (targetLocked) return;
+        const active = useGame.getState().active;
         setArea(to);
-        setPosition(AREAS[to].spawn);
+        setPosition(active, AREAS[to].spawn);
       }}
     >
       <torusGeometry args={[0.7, 0.15, 12, 24]} />

@@ -18,7 +18,8 @@ export function AutoRoam() {
   }, []);
 
   useFrame((_, dt) => {
-    const pos = useGame.getState().dino.position;
+    const active = useGame.getState().active;
+    const pos = useGame.getState().characters[active].position;
     if (cooldown.current > 0) {
       cooldown.current -= dt;
       return;
@@ -39,7 +40,7 @@ export function AutoRoam() {
     const step = Math.min(dist, MOVE_SPEED * dt);
     useGame
       .getState()
-      .setPosition([pos[0] + (dx / dist) * step, pos[1], pos[2] + (dz / dist) * step]);
+      .setPosition(active, [pos[0] + (dx / dist) * step, pos[1], pos[2] + (dz / dist) * step]);
   });
 
   return null;

@@ -13,8 +13,8 @@ describe('persistence', () => {
     const raw = localStorage.getItem(SAVE_KEY);
     expect(raw).not.toBeNull();
     const blob = JSON.parse(raw!);
-    expect(blob.version).toBe(1);
-    expect(blob.dino.stats.hunger).toBe(100);
+    expect(blob.version).toBe(2);
+    expect(blob.characters.dino.stats.hunger).toBe(100);
     expect(typeof blob.lastSeenAt).toBe('number');
   });
 
@@ -23,11 +23,11 @@ describe('persistence', () => {
   });
 
   it('load returns the persisted state when present', () => {
-    useGame.getState().setStat('hunger', 42);
+    useGame.getState().setStat('dino', 'hunger', 42);
     save();
     const loaded = load();
     expect(loaded).not.toBeNull();
-    expect(loaded!.dino.stats.hunger).toBe(42);
+    expect(loaded!.characters.dino.stats.hunger).toBe(42);
   });
 
   it('load backs up corrupt save and returns null', () => {

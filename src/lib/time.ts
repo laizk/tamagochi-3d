@@ -14,14 +14,14 @@ const STAT_LABEL: Record<Exclude<StatKey, 'health'>, string> = {
 export type OfflineSummary = { elapsedSeconds: number; biggestDrop: string };
 
 export function applyOfflineDrain(lastSeenAt: number): OfflineSummary {
-  const before = { ...useGame.getState().dino.stats };
+  const before = { ...useGame.getState().characters.dino.stats };
   const elapsedMs = Math.max(0, Date.now() - lastSeenAt);
   const elapsedSeconds = Math.min(MAX_OFFLINE_SECONDS, elapsedMs / 1000);
   if (elapsedSeconds === 0) {
     return { elapsedSeconds: 0, biggestDrop: 'okay' };
   }
   tick(elapsedSeconds, OFFLINE_MULTIPLIER);
-  const after = useGame.getState().dino.stats;
+  const after = useGame.getState().characters.dino.stats;
   let biggestKey: keyof typeof STAT_LABEL = 'hunger';
   let biggestDelta = 0;
   for (const k of Object.keys(STAT_LABEL) as Array<keyof typeof STAT_LABEL>) {
