@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { ActionBar } from '@/src/game/HUD/ActionBar';
 import { AreaName } from '@/src/game/HUD/AreaName';
 import { CharacterToggle } from '@/src/game/HUD/CharacterToggle';
+import { WelcomeBirds } from '@/src/game/HUD/WelcomeBirds';
 import { MiniMap } from '@/src/game/HUD/MiniMap';
 import { Onboarding } from '@/src/game/HUD/Onboarding';
 import { SettingsMenu } from '@/src/game/HUD/SettingsMenu';
@@ -79,6 +80,7 @@ export function Game() {
       <SettingsMenu />
       <ThoughtBubble />
       {needsOnboarding && <Onboarding onDone={() => setNeedsOnboarding(false)} />}
+      {!needsOnboarding && <WelcomeBirds />}
     </div>
   );
 }
