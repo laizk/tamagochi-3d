@@ -21,6 +21,12 @@ export function TapControls() {
         const dx = Math.abs(u.clientX - downX);
         const dy = Math.abs(u.clientY - downY);
         if (dx + dy < 8) {
+          const active = useGame.getState().active;
+          const action = useGame.getState().characters[active].action;
+          if (action !== null) {
+            gl.domElement.removeEventListener('pointerup', onUp);
+            return;
+          }
           // Treat as tap
           const rect = gl.domElement.getBoundingClientRect();
           ndc.current.set(
@@ -43,6 +49,11 @@ export function TapControls() {
   useFrame((_, dt) => {
     if (!target.current) return;
     const active = useGame.getState().active;
+    const action = useGame.getState().characters[active].action;
+    if (action !== null) {
+      target.current = null;
+      return;
+    }
     const pos = useGame.getState().characters[active].position;
     const dx = target.current.x - pos[0];
     const dz = target.current.z - pos[2];
