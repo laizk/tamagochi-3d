@@ -39,10 +39,9 @@ export function DinoCute() {
   }, []);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      (window as unknown as Record<string, unknown>).__getDinoRotationY = () =>
-        groupRef.current?.rotation.y ?? null;
-    }
+    // E2E hook: read-only rotation accessor for tests asserting facing.
+    (window as unknown as Record<string, unknown>).__getDinoRotationY = () =>
+      groupRef.current?.rotation.y ?? null;
   }, []);
 
   const [mood, setMood] = useState<Mood>('happy');
