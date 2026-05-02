@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import type { RefObject } from 'react';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { AnimationClip, Group, Mesh, Object3D } from 'three';
-import { SkeletonUtils } from 'three-stdlib';
+import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { useGame } from '@/src/game/store';
 import { onPet } from '@/src/game/systems/interactions';
 
@@ -69,7 +69,7 @@ function DinoGLB({ position }: { position: [number, number, number] }) {
 
   // Clone the shared cached scene so multiple mounts don't fight over the same
   // Object3D (StrictMode double-mount, future skin preview, etc.).
-  const cloned = useMemo(() => SkeletonUtils.clone(gltf.scene) as Group, [gltf.scene]);
+  const cloned = useMemo(() => cloneSkeleton(gltf.scene) as Group, [gltf.scene]);
 
   const { actions } = useAnimations(gltf.animations, groupRef);
 
