@@ -11,14 +11,22 @@ test('lovebirds and cloud perch render in every area', async ({ page }) => {
       active: 'dino',
       characters: {
         dino: {
-          id: 'dino-1', name: 'Rex', species: 'dino', skinId: 'default',
-          stage: 'baby', age: 10,
+          id: 'dino-1',
+          name: 'Rex',
+          species: 'dino',
+          skinId: 'default',
+          stage: 'baby',
+          age: 10,
           stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
           position: [0, 0, 0],
         },
         lovebirds: {
-          id: 'lovebirds-1', name: 'Lovebirds', species: 'lovebirds', skinId: 'default',
-          stage: 'baby', age: 0,
+          id: 'lovebirds-1',
+          name: 'Lovebirds',
+          species: 'lovebirds',
+          skinId: 'default',
+          stage: 'baby',
+          age: 0,
           stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
           position: [0, 0, 0],
         },
@@ -37,7 +45,8 @@ test('lovebirds and cloud perch render in every area', async ({ page }) => {
   for (const area of AREAS) {
     await page.evaluate((a) => {
       // Reach into the zustand store via a global hook, set area programmatically.
-      (window as any).__setArea?.(a);
+      const w = window as unknown as { __setArea?: (area: string) => void };
+      w.__setArea?.(a);
     }, area);
     // Give R3F a frame.
     await page.waitForTimeout(200);

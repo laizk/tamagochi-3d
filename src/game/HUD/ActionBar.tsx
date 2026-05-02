@@ -4,9 +4,9 @@ import { useGame } from '@/src/game/store';
 import {
   BIRD_FOODS,
   type BirdFoodId,
+  bath,
   type DinoFoodId,
   FOODS,
-  bath,
   feed,
   pet,
   sleep,

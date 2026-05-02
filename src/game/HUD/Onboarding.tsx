@@ -19,7 +19,9 @@ export function Onboarding({ onDone }: Props) {
         <p className="text-center text-4xl">🥚</p>
         <p className="text-center text-lg font-bold">It's an egg!</p>
         <p className="text-center text-sm text-slate-600">What's your dino's name?</p>
-        <p className="text-center text-xs text-slate-400">Tap 🐦 in the top-right to switch to your lovebirds!</p>
+        <p className="text-center text-xs text-slate-400">
+          Tap 🐦 in the top-right to switch to your lovebirds!
+        </p>
         <input
           ref={inputRef}
           value={name}

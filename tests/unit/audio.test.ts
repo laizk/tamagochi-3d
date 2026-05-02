@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { play, _resetAudioCache } from '@/src/game/systems/audio';
 import { useGame } from '@/src/game/store';
+import { _resetAudioCache, play } from '@/src/game/systems/audio';
 
 let audioCtorCount = 0;
 

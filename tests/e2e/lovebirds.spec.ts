@@ -10,14 +10,22 @@ test('lovebirds: toggle, switch, pet, food menu', async ({ page }) => {
       active: 'dino',
       characters: {
         dino: {
-          id: 'dino-1', name: 'Rex', species: 'dino', skinId: 'default',
-          stage: 'baby', age: 10,
+          id: 'dino-1',
+          name: 'Rex',
+          species: 'dino',
+          skinId: 'default',
+          stage: 'baby',
+          age: 10,
           stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
           position: [0, 0, 0],
         },
         lovebirds: {
-          id: 'lovebirds-1', name: 'Lovebirds', species: 'lovebirds', skinId: 'default',
-          stage: 'baby', age: 0,
+          id: 'lovebirds-1',
+          name: 'Lovebirds',
+          species: 'lovebirds',
+          skinId: 'default',
+          stage: 'baby',
+          age: 0,
           stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
           position: [0, 0, 0],
         },
@@ -44,9 +52,7 @@ test('lovebirds: toggle, switch, pet, food menu', async ({ page }) => {
   await birdBtn.click();
   await expect(birdBtn).toHaveAttribute('aria-pressed', 'true');
 
-  // Active character in store = 'lovebirds'.
-  const active = await page.evaluate(() => (window as any).__GAME?.getState?.().active);
-  // If __GAME not exposed, skip the read; UI assertion is enough.
+  // UI assertion above confirms active=lovebirds; __GAME store read is optional and skipped.
 
   // Switch back via dino pill.
   await dinoBtn.click();

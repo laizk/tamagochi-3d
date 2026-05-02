@@ -10,7 +10,7 @@ export function CharacterToggle() {
       on ? 'bg-white shadow-md scale-110' : 'bg-white/40 backdrop-blur'
     }`;
   return (
-    <div className="pointer-events-auto fixed top-3 right-3 z-20 flex gap-2 select-none">
+    <div className="pointer-events-auto fixed top-3 left-3 z-20 flex gap-2 select-none">
       <button
         type="button"
         aria-label="Switch to dino"

@@ -1,8 +1,8 @@
 'use client';
 
-import type { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
+import type { Group } from 'three';
 
 type Props = {
   position?: [number, number, number];

@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
-import { BIRD_FOODS, FOODS, _resetPetDebounce, bath, feed, pet, sleep } from '@/src/game/systems/interactions';
+import {
+  _resetPetDebounce,
+  BIRD_FOODS,
+  bath,
+  FOODS,
+  feed,
+  pet,
+  sleep,
+} from '@/src/game/systems/interactions';
 
 describe('interactions: charId-aware', () => {
   beforeEach(() => {

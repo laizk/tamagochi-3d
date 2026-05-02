@@ -57,7 +57,7 @@ export function Lovebird({
   return (
     <group
       ref={ref}
-      onClick={(e) => {
+      onPointerDown={(e) => {
         e.stopPropagation();
         onClick?.();
       }}

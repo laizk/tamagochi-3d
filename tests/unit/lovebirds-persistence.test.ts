@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { load, SAVE_KEY, SAVE_KEY_V1 } from '@/src/lib/persistence';
+import { load, SAVE_KEY_V1 } from '@/src/lib/persistence';
 
 const FAKE_V1 = {
   dino: {

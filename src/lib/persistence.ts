@@ -1,8 +1,8 @@
 import {
   type GameState,
-  type Pet,
   INITIAL_DINO,
   INITIAL_LOVEBIRDS,
+  type Pet,
   useGame,
 } from '@/src/game/store';
 

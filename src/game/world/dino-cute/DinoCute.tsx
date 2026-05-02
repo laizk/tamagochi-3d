@@ -60,7 +60,7 @@ export function DinoCute() {
   return (
     <group
       ref={groupRef}
-      onClick={(e) => {
+      onPointerDown={(e) => {
         e.stopPropagation();
         const active = useGame.getState().active;
         if (active !== 'dino') useGame.getState().setActive('dino');

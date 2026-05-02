@@ -17,13 +17,13 @@ export function LovebirdMouth({ mood }: Props) {
   return (
     <group scale={[1, flip, 1]}>
       {[
-        { p: [-0.045, 0.0, 0], r: [0, 0, -0.6] },
-        { p: [-0.015, -0.02 * open, 0], r: [0, 0, 0.6] },
-        { p: [0.015, -0.02 * open, 0], r: [0, 0, -0.6] },
-        { p: [0.045, 0.0, 0], r: [0, 0, 0.6] },
-      ].map((seg, i) => (
+        { id: 'w0', p: [-0.045, 0.0, 0], r: [0, 0, -0.6] },
+        { id: 'w1', p: [-0.015, -0.02 * open, 0], r: [0, 0, 0.6] },
+        { id: 'w2', p: [0.015, -0.02 * open, 0], r: [0, 0, -0.6] },
+        { id: 'w3', p: [0.045, 0.0, 0], r: [0, 0, 0.6] },
+      ].map((seg) => (
         <mesh
-          key={i}
+          key={seg.id}
           position={seg.p as [number, number, number]}
           rotation={seg.r as [number, number, number]}
         >

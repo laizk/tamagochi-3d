@@ -9,7 +9,9 @@ describe('feed', () => {
     useGame.getState().setStat('dino', 'hunger', 30);
     feed('apple', 'dino');
     const food = FOODS.apple;
-    expect(useGame.getState().characters.dino.stats.hunger).toBe(Math.min(100, 30 + food.hungerRestored));
+    expect(useGame.getState().characters.dino.stats.hunger).toBe(
+      Math.min(100, 30 + food.hungerRestored),
+    );
   });
 
   it('does not raise above 100', () => {

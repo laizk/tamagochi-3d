@@ -104,8 +104,7 @@ export const useGame = create<GameState & GameActions>((set) => ({
       }),
     ),
   setPosition: (id, p) => set((s) => setChar(s, id, { position: p })),
-  ageBy: (id, seconds) =>
-    set((s) => setChar(s, id, { age: s.characters[id].age + seconds })),
+  ageBy: (id, seconds) => set((s) => setChar(s, id, { age: s.characters[id].age + seconds })),
   setArea: (a) => set({ currentArea: a }),
   setControlMode: (m) => set({ controlMode: m }),
   hydrate: (next) => set(next),
