@@ -84,7 +84,7 @@ export function DinoFace({ expression }: { expression: Expression }) {
       <group position={[-0.13, 1.18, 0.48]}>
         <Eyes expression={expression} />
       </group>
-      <group position={[0.13, 1.18, 0.48]}>
+      <group position={[0.13, 1.18, 0.48]} scale={[-1, 1, 1]}>
         <Eyes expression={expression} />
       </group>
       {/* brows */}

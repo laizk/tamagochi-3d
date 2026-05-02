@@ -1,7 +1,7 @@
 'use client';
 
 import { useFrame } from '@react-three/fiber';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import type { Mesh } from 'three';
 import type { Expression } from '@/src/game/systems/expression';
 
@@ -38,8 +38,8 @@ const BLINK_MAX = 5000;
 export function Eyes({ expression }: { expression: Expression }) {
   const variant = variantFor(expression);
   const lidRef = useRef<Mesh>(null);
-  const [nextBlinkAt, setNextBlinkAt] = useState(
-    () => performance.now() + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN),
+  const nextBlinkAtRef = useRef<number>(
+    performance.now() + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN),
   );
   const blinkingUntilRef = useRef(0);
 
@@ -52,9 +52,9 @@ export function Eyes({ expression }: { expression: Expression }) {
     if (variant === 'closed') lidY = 1;
     if (variant === 'squint') lidY = 0.7;
     if (variant === 'wide') lidY = 0;
-    if (blinkable && now >= nextBlinkAt && now > blinkingUntilRef.current) {
+    if (blinkable && now >= nextBlinkAtRef.current && now > blinkingUntilRef.current) {
       blinkingUntilRef.current = now + BLINK_MS;
-      setNextBlinkAt(now + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN));
+      nextBlinkAtRef.current = now + BLINK_MIN + Math.random() * (BLINK_MAX - BLINK_MIN);
     }
     if (now < blinkingUntilRef.current) lidY = 1;
     lidRef.current.rotation.x = lidY * 1.5;

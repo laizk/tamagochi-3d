@@ -38,7 +38,7 @@ export function Jaw({ expression }: { expression: Expression }) {
     let open = base;
     if (expression === 'eat') {
       // 4 Hz chew oscillation around 0.3 baseline
-      open = 0.3 + Math.abs(Math.sin((performance.now() / 1000) * Math.PI * 2 * 4)) * 0.25;
+      open = 0.3 + ((Math.sin((performance.now() / 1000) * Math.PI * 2 * 4) + 1) / 2) * 0.25;
     }
     ref.current.rotation.x = open;
   });
