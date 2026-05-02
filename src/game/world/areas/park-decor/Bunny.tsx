@@ -16,10 +16,7 @@ export function Bunny() {
     if (!ref.current) return;
     const now = performance.now();
     if (!targetRef.current || now - lastTargetAt.current > 4000) {
-      targetRef.current = [
-        (Math.random() * 2 - 1) * BOUND,
-        (Math.random() * 2 - 1) * BOUND,
-      ];
+      targetRef.current = [(Math.random() * 2 - 1) * BOUND, (Math.random() * 2 - 1) * BOUND];
       lastTargetAt.current = now;
     }
     const [tx, tz] = targetRef.current;

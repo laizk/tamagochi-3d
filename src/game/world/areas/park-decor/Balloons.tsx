@@ -4,7 +4,12 @@ import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import type { Group } from 'three';
 
-const BALLOONS: Array<{ start: [number, number, number]; color: string; speed: number; offset: number }> = [
+const BALLOONS: Array<{
+  start: [number, number, number];
+  color: string;
+  speed: number;
+  offset: number;
+}> = [
   { start: [3.5, 0.5, 5], color: '#FF7AB6', speed: 0.3, offset: 0 },
   { start: [-4.5, 0.5, 4.5], color: '#FFD86B', speed: 0.4, offset: 2 },
   { start: [1.5, 0.5, -4.5], color: '#A4E0FF', speed: 0.35, offset: 5 },
@@ -29,7 +34,7 @@ export function Balloons() {
     <>
       {BALLOONS.map((b, i) => (
         <group
-          key={i}
+          key={b.color}
           position={b.start}
           ref={(el) => {
             refs.current[i] = el;

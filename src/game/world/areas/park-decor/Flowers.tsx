@@ -28,8 +28,8 @@ export function Flowers() {
             <cylinderGeometry args={[0.01, 0.01, 0.1, 6]} />
             <meshStandardMaterial color="#3f8a3a" />
           </mesh>
-          {PETAL_OFFSETS.map(([px, py, pz], j) => (
-            <mesh key={j} position={[px, 0.1 + py, pz]}>
+          {PETAL_OFFSETS.map(([px, py, pz], _j) => (
+            <mesh key={`${px}-${py}-${pz}`} position={[px, 0.1 + py, pz]}>
               <sphereGeometry args={[0.025, 8, 8]} />
               <meshStandardMaterial color={color} roughness={0.5} />
             </mesh>

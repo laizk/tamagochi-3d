@@ -13,7 +13,15 @@ const BUTTERFLIES: Array<{ center: [number, number, number]; color: string; offs
 
 const FLAP_HZ = 8;
 
-function Wing({ side, color, flapRef }: { side: 1 | -1; color: string; flapRef: React.RefObject<Mesh | null> }) {
+function Wing({
+  side,
+  color,
+  flapRef,
+}: {
+  side: 1 | -1;
+  color: string;
+  flapRef: React.RefObject<Mesh | null>;
+}) {
   return (
     <mesh ref={flapRef} position={[0.05 * side, 0, 0]}>
       <planeGeometry args={[0.18, 0.14]} />
@@ -54,8 +62,8 @@ export function Butterfly({ idx }: { idx: number }) {
 export function Butterflies() {
   return (
     <>
-      {BUTTERFLIES.map((_, i) => (
-        <Butterfly key={i} idx={i} />
+      {BUTTERFLIES.map((b, i) => (
+        <Butterfly key={b.color} idx={i} />
       ))}
     </>
   );

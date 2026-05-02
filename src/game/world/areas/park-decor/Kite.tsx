@@ -20,7 +20,13 @@ export function Kite() {
   return (
     <>
       {/* string from anchor to kite — drawn as a thin tilted cylinder */}
-      <mesh position={[(ANCHOR[0] + KITE_BASE[0]) / 2, (ANCHOR[1] + KITE_BASE[1]) / 2, (ANCHOR[2] + KITE_BASE[2]) / 2]}>
+      <mesh
+        position={[
+          (ANCHOR[0] + KITE_BASE[0]) / 2,
+          (ANCHOR[1] + KITE_BASE[1]) / 2,
+          (ANCHOR[2] + KITE_BASE[2]) / 2,
+        ]}
+      >
         <cylinderGeometry args={[0.005, 0.005, Math.hypot(KITE_BASE[1] - ANCHOR[1], 0.5), 4]} />
         <meshStandardMaterial color="#444" />
       </mesh>

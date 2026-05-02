@@ -30,7 +30,7 @@ export function Clouds() {
     <>
       {CLOUDS.map((c, i) => (
         <group
-          key={i}
+          key={`${c.y}-${c.z}`}
           position={[0, c.y, c.z]}
           ref={(el) => {
             refs.current[i] = el;
