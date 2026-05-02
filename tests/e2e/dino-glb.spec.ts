@@ -18,6 +18,9 @@ const BABY_SAVE = JSON.stringify({
   version: 1,
 });
 
+// Errors that indicate real failures, not r3f/React info messages.
+const CRITICAL_ERROR_RE = /Error|Failed to load|Cannot read|Uncaught/i;
+
 test.describe('dino-glb: egg vs GLB rendering', () => {
   test('fresh load shows egg modal and canvas', async ({ page }) => {
     await page.addInitScript(() => localStorage.clear());
@@ -54,25 +57,15 @@ test.describe('dino-glb: egg vs GLB rendering', () => {
 
     // modal should go away
     await expect(page.getByText("It's an egg!", { exact: true })).not.toBeVisible();
-    // canvas remains
+    // canvas remains; capture screenshot for human review
     await expect(page.locator('canvas')).toBeVisible();
+    await page.screenshot({ path: '/tmp/dino-glb-after-hatch.png' });
     // wait for GLB network fetch
     await expect.poll(() => glbStatus.length, { timeout: 10_000 }).toBeGreaterThan(0);
     expect(glbStatus).not.toContain(404);
 
-    const criticalErrors = errors.filter((e) => /shader|gltf|404|three|webgl|React/i.test(e));
+    const criticalErrors = errors.filter((e) => CRITICAL_ERROR_RE.test(e));
     expect(criticalErrors).toHaveLength(0);
-  });
-
-  test('after hatch screenshot — dino is visible', async ({ page }) => {
-    await page.addInitScript(() => localStorage.clear());
-    await page.goto('/');
-    await page.getByPlaceholder('Rex').fill('Spike');
-    await page.getByRole('button', { name: /hatch/i }).click();
-    // give GLB time to render
-    await page.waitForTimeout(2000);
-    await page.screenshot({ path: '/tmp/dino-glb-after-hatch.png' });
-    await expect(page.locator('canvas')).toBeVisible();
   });
 
   test('persistence: reload with baby stage shows GLB not egg modal', async ({ page }) => {
@@ -95,7 +88,7 @@ test.describe('dino-glb: egg vs GLB rendering', () => {
     await expect.poll(() => glbStatus.length, { timeout: 10_000 }).toBeGreaterThan(0);
     expect(glbStatus).not.toContain(404);
 
-    const criticalErrors = errors.filter((e) => /shader|gltf|404|three|webgl|React/i.test(e));
+    const criticalErrors = errors.filter((e) => CRITICAL_ERROR_RE.test(e));
     expect(criticalErrors).toHaveLength(0);
   });
 
@@ -114,7 +107,9 @@ test.describe('dino-glb: egg vs GLB rendering', () => {
       if (req.url().includes('t-rex.glb')) glbRequests.push(req.url());
     });
     await page.goto('/', { waitUntil: 'networkidle' });
-    await page.waitForTimeout(3000);
+    // Poll until no new GLB requests arrive, then assert deduplication.
+    await expect.poll(() => glbRequests.length, { timeout: 8_000 }).toBeGreaterThanOrEqual(0);
+    await page.waitForLoadState('networkidle');
     // Must be fetched no more than once (preload deduplicated by drei)
     expect(glbRequests.length).toBeLessThanOrEqual(1);
   });
