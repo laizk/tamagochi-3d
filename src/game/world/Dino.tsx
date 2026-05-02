@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import type { Mesh } from 'three';
 import { useGame } from '@/src/game/store';
+import { DinoCute } from '@/src/game/world/dino-cute/DinoCute';
 import { useDinoMotion } from '@/src/game/world/useDinoMotion';
 
 function DinoEgg() {
@@ -19,7 +20,6 @@ function DinoEgg() {
 
 export function Dino() {
   const stage = useGame((s) => s.dino.stage);
-  // Post-hatch DinoCute is wired in Task 6. Until then, render egg for all stages.
   if (stage === 'egg') return <DinoEgg />;
-  return <DinoEgg />;
+  return <DinoCute />;
 }
