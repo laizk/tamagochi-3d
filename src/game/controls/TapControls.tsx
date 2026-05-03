@@ -36,7 +36,7 @@ export function TapControls() {
           raycaster.current.setFromCamera(ndc.current, camera);
           const hits = raycaster.current.intersectObjects(scene.children, true);
           const groundHit = hits.find((h) => h.object.userData?.kind === 'ground');
-          if (groundHit) target.current = groundHit.point.clone().setY(0);
+          if (groundHit) target.current = groundHit.point.clone();
         }
         gl.domElement.removeEventListener('pointerup', onUp);
       };
@@ -59,13 +59,18 @@ export function TapControls() {
     const dz = target.current.z - pos[2];
     const dist = Math.hypot(dx, dz);
     if (dist < 0.05) {
+      // Snap y to target so we land cleanly on the destination floor.
+      useGame.getState().setPosition(active, [pos[0], target.current.y, pos[2]]);
       target.current = null;
       return;
     }
     const step = Math.min(dist, MOVE_SPEED * dt);
     const nx = pos[0] + (dx / dist) * step;
     const nz = pos[2] + (dz / dist) * step;
-    useGame.getState().setPosition(active, [nx, pos[1], nz]);
+    // Interpolate y by horizontal progress: smooth ramp between floors.
+    const t = step / dist;
+    const ny = pos[1] + (target.current.y - pos[1]) * t;
+    useGame.getState().setPosition(active, [nx, ny, nz]);
   });
 
   return null;
