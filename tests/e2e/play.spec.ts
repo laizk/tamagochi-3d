@@ -33,7 +33,9 @@ test.describe('core play loop', () => {
             stage: 'baby',
             age: 10,
             stats: { hunger: 30, happy: 80, energy: 80, clean: 80, health: 80 },
-            position: [0, 0, 0],
+            // Seed near the dining-table waypoint so the feed → consume
+            // round-trip happens within the poll window.
+            position: [-1.5, 0, 0.95],
           },
           lovebirds: {
             id: 'lovebirds-1',

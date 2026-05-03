@@ -13,7 +13,9 @@ const HATCHED_SAVE = {
       stage: 'baby',
       age: 10,
       stats: { hunger: 50, happy: 100, energy: 100, clean: 100, health: 100 },
-      position: [0, 0, 0],
+      // Seeded at the dining-table food waypoint so walk-to-food latency
+      // doesn't impact the action-lock timing assertions.
+      position: [-1.5, 0, 0.95],
     },
     lovebirds: {
       id: 'lovebirds-1',

@@ -26,8 +26,8 @@ export function save(): void {
   const blob: V2Blob = {
     active: state.active,
     characters: {
-      dino: { ...state.characters.dino, action: null },
-      lovebirds: { ...state.characters.lovebirds, action: null },
+      dino: { ...state.characters.dino, action: null, foodTarget: null },
+      lovebirds: { ...state.characters.lovebirds, action: null, foodTarget: null },
     },
     currentArea: state.currentArea,
     controlMode: state.controlMode,
@@ -49,6 +49,8 @@ export function load(): GameState | null {
       if (parsed.version === 2) {
         parsed.characters.dino.action = null;
         parsed.characters.lovebirds.action = null;
+        parsed.characters.dino.foodTarget = null;
+        parsed.characters.lovebirds.foodTarget = null;
         return parsed;
       }
     } catch {

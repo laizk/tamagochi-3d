@@ -13,6 +13,18 @@ export type Species = 'dino' | 'lovebirds';
 export type ActionKind = 'eat' | 'bath' | 'sleep' | 'play';
 export type Action = { kind: ActionKind; startedAt: number; durationMs: number };
 
+/**
+ * Pending food drop the pet has to walk over to actually eat. Spawned by
+ * `feed()` and consumed by movement code on arrival at `waypoint`.
+ */
+export type FoodTarget = {
+  foodId: string;
+  /** World position of the visible food mesh. */
+  position: [number, number, number];
+  /** Where the pet should stand to eat. */
+  waypoint: [number, number, number];
+};
+
 export type Pet = {
   id: string;
   name: string;
@@ -23,6 +35,7 @@ export type Pet = {
   stats: Record<StatKey, Stat>;
   position: [number, number, number];
   action: Action | null;
+  foodTarget: FoodTarget | null;
 };
 
 // Backwards-friendly alias for any existing imports.
@@ -52,6 +65,8 @@ export type GameActions = {
   setLovebirdsSeen: () => void;
   startAction: (charId: CharacterId, kind: ActionKind, durationMs: number) => void;
   clearAction: (charId: CharacterId) => void;
+  setFoodTarget: (charId: CharacterId, food: FoodTarget) => void;
+  clearFoodTarget: (charId: CharacterId) => void;
 };
 
 export const INITIAL_DINO = (): Pet => ({
@@ -64,6 +79,7 @@ export const INITIAL_DINO = (): Pet => ({
   stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
   position: [0, 0, 0],
   action: null,
+  foodTarget: null,
 });
 
 export const INITIAL_LOVEBIRDS = (): Pet => ({
@@ -76,6 +92,7 @@ export const INITIAL_LOVEBIRDS = (): Pet => ({
   stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
   position: [0, 0, 0],
   action: null,
+  foodTarget: null,
 });
 
 const clamp = (n: number, min = 0, max = 100) => Math.min(max, Math.max(min, n));
@@ -121,6 +138,8 @@ export const useGame = create<GameState & GameActions>((set) => ({
   startAction: (id, kind, durationMs) =>
     set((s) => setChar(s, id, { action: { kind, startedAt: performance.now(), durationMs } })),
   clearAction: (id) => set((s) => setChar(s, id, { action: null })),
+  setFoodTarget: (id, food) => set((s) => setChar(s, id, { foodTarget: food })),
+  clearFoodTarget: (id) => set((s) => setChar(s, id, { foodTarget: null })),
 }));
 
 const _initialSnapshot = useGame.getState();

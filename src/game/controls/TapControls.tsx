@@ -3,8 +3,9 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Raycaster, Vector2, Vector3 } from 'three';
-import { useGame } from '@/src/game/store';
+import { type CharacterId, useGame } from '@/src/game/store';
 import { type Obstacle, PET_R, separatePets, tryStep } from '@/src/game/systems/collision';
+import { consumeFood } from '@/src/game/systems/interactions';
 import { HOME_OBSTACLES } from '@/src/game/world/areas/home-interior/obstacles';
 import {
   FLOOR_2_THRESHOLD,
@@ -14,6 +15,7 @@ import {
 import { readRuntimePos, writeRuntimePos } from '@/src/game/world/runtimePositions';
 
 const MOVE_SPEED = 2.2; // units / second
+const FOOD_PICKUP_DIST = 0.5;
 
 const NO_OBSTACLES: Obstacle[] = [];
 
@@ -43,6 +45,8 @@ function planPath(
 export function TapControls() {
   const { camera, gl, scene } = useThree();
   const queue = useRef<Vector3[]>([]);
+  const seekingFoodId = useRef<string | null>(null);
+  const seekingFor = useRef<CharacterId | null>(null);
   const raycaster = useRef(new Raycaster());
   const ndc = useRef(new Vector2());
 
@@ -76,6 +80,10 @@ export function TapControls() {
               groundHit.point.clone(),
               area,
             );
+            // Manual tap cancels any pending food fetch.
+            useGame.getState().clearFoodTarget(active);
+            seekingFoodId.current = null;
+            seekingFor.current = null;
           }
         }
         gl.domElement.removeEventListener('pointerup', onUp);
@@ -87,15 +95,43 @@ export function TapControls() {
   }, [camera, gl, scene]);
 
   useFrame((_, dt) => {
-    const active = useGame.getState().active;
-    const action = useGame.getState().characters[active].action;
+    const state = useGame.getState();
+    const active = state.active;
+    const action = state.characters[active].action;
     if (action !== null) {
       queue.current = [];
+      seekingFoodId.current = null;
+      seekingFor.current = null;
       return;
     }
-    const pos = useGame.getState().characters[active].position;
-    // Always keep the runtime cache fresh so the other pet can avoid us.
+    const pos = state.characters[active].position;
     writeRuntimePos(active, pos[0], pos[1], pos[2]);
+
+    // Auto-seek pending food: when the active pet has a foodTarget that we
+    // haven't planned a route to yet, build the waypoint queue now.
+    const food = state.characters[active].foodTarget;
+    if (food) {
+      const isNewSeek = seekingFor.current !== active || seekingFoodId.current !== food.foodId;
+      if (isNewSeek) {
+        const wp = new Vector3(...food.waypoint);
+        queue.current = planPath({ x: pos[0], y: pos[1], z: pos[2] }, wp, state.currentArea);
+        seekingFoodId.current = food.foodId;
+        seekingFor.current = active;
+      }
+      // Eat the moment we're close enough.
+      const dxF = food.waypoint[0] - pos[0];
+      const dzF = food.waypoint[2] - pos[2];
+      if (Math.hypot(dxF, dzF) < FOOD_PICKUP_DIST && Math.abs(food.waypoint[1] - pos[1]) < 0.6) {
+        consumeFood(active);
+        queue.current = [];
+        seekingFoodId.current = null;
+        seekingFor.current = null;
+        return;
+      }
+    } else {
+      seekingFoodId.current = null;
+      seekingFor.current = null;
+    }
 
     if (queue.current.length === 0) return;
     const next = queue.current[0];
@@ -110,9 +146,8 @@ export function TapControls() {
     const step = Math.min(dist, MOVE_SPEED * dt);
     const ux = (dx / dist) * step;
     const uz = (dz / dist) * step;
-    const area = useGame.getState().currentArea;
+    const area = state.currentArea;
     const stepped = tryStep(pos[0], pos[2], pos[1], ux, uz, PET_R, obstaclesFor(area));
-    // pet-pet separation against the other character
     const otherId = active === 'dino' ? 'lovebirds' : 'dino';
     const other = readRuntimePos(otherId);
     const adj = separatePets(stepped.x, stepped.z, pos[1], other[0], other[2], other[1], PET_R);
