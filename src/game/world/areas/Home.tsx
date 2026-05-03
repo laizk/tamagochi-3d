@@ -1,26 +1,28 @@
 'use client';
-import { Fountain } from '@/src/game/world/areas/home-decor/Fountain';
-import { Pond } from '@/src/game/world/areas/home-decor/Pond';
+import { Bed } from '@/src/game/world/areas/home-interior/Bed';
+import { DiningTable } from '@/src/game/world/areas/home-interior/DiningTable';
+import { Floor } from '@/src/game/world/areas/home-interior/Floor';
+import { PictureFrame } from '@/src/game/world/areas/home-interior/PictureFrame';
+import { Stairs } from '@/src/game/world/areas/home-interior/Stairs';
+import { Walls } from '@/src/game/world/areas/home-interior/Walls';
 import { Portal } from '@/src/game/world/Portal';
-import { Ground } from '@/src/game/world/props/Ground';
 import { Sky } from '@/src/game/world/props/Sky';
 
 export function Home() {
   return (
     <>
       <Sky />
-      <Ground color="#a98e6a" />
-      <mesh position={[0, 1, -3]} castShadow>
-        <boxGeometry args={[3, 2, 2]} />
-        <meshStandardMaterial color="#d97a5e" />
-      </mesh>
-      <mesh position={[0, 2.5, -3]} rotation={[0, Math.PI / 4, 0]} castShadow>
-        <coneGeometry args={[2.2, 1.2, 4]} />
-        <meshStandardMaterial color="#7e3f2c" />
-      </mesh>
-      <Pond />
-      <Fountain />
-      <Portal to="town" position={[6, 0.7, 0]} />
+      <Walls />
+      <Floor />
+      <Stairs />
+      <DiningTable position={[-1.5, 0, 0]} />
+      <Bed sheetColor="#7AC0FF" position={[-1.5, 2.5, -1]} />
+      <Bed sheetColor="#FF9CB8" position={[1.5, 2.5, -1]} />
+      <PictureFrame subject="dino" position={[-2.95, 1.6, 0]} rotation={[0, Math.PI / 2, 0]} />
+      <PictureFrame subject="lovebird" position={[2.95, 1.6, 0]} rotation={[0, -Math.PI / 2, 0]} />
+      <PictureFrame subject="lovebird" position={[-2.95, 4.1, 0]} rotation={[0, Math.PI / 2, 0]} />
+      <PictureFrame subject="dino" position={[2.95, 4.1, 0]} rotation={[0, -Math.PI / 2, 0]} />
+      <Portal to="yard" position={[0, 0.7, 3.5]} />
     </>
   );
 }
