@@ -7,6 +7,7 @@ import { useGame } from '@/src/game/store';
 import { type Obstacle, PET_R, separatePets, tryStep } from '@/src/game/systems/collision';
 import { pickWanderTarget } from '@/src/game/systems/wander';
 import { HOME_OBSTACLES } from '@/src/game/world/areas/home-interior/obstacles';
+import { FLOOR_2_THRESHOLD } from '@/src/game/world/areas/home-interior/stair-config';
 import { readRuntimePos, writeRuntimePos } from '@/src/game/world/runtimePositions';
 
 const RADIUS = 3;
@@ -80,7 +81,17 @@ function update(
     nz = adj.z;
   }
   cur.x = nx;
-  cur.y += (ty - cur.y) * factor;
+  let nextY = cur.y + (ty - cur.y) * factor;
+  if (area === 'home') {
+    // Birds can't cross floor 2: stay on whichever level they're on. To
+    // change levels they have to be in active mode (which routes through
+    // stairs via the path planner).
+    const onFloor2 = cur.y > FLOOR_2_THRESHOLD + 0.5;
+    const yMin = onFloor2 ? 2.8 : 0.6;
+    const yMax = onFloor2 ? 4.2 : 2.2;
+    nextY = Math.max(yMin, Math.min(nextY, yMax));
+  }
+  cur.y = nextY;
   cur.z = nz;
 }
 
