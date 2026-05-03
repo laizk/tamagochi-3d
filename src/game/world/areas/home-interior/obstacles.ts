@@ -18,7 +18,8 @@ export const HOME_OBSTACLES: Obstacle[] = [
   { minX: -1.9, maxX: -1.1, minZ: -1.8, maxZ: -0.2, minY: 2.4, maxY: 3.5 },
   // Bed right (floor 2)
   { minX: 1.1, maxX: 1.9, minZ: -1.8, maxZ: -0.2, minY: 2.4, maxY: 3.5 },
-  // Stair hole on floor 2 — only blocks pets at floor-2 altitude so they
-  // can't walk into the void; floor 1 below stays free to walk under.
-  { minX: 4, maxX: 5.05, minZ: 1, maxZ: 5.05, minY: 2.4, maxY: 2.8 },
+  // Stair hole on floor 2 — only blocks pets standing at floor 2 height
+  // (feet >= 2.45). Once the pet starts descending and its y drops below
+  // the floor plane, it can pass through onto the stair surface.
+  { minX: 4, maxX: 5.05, minZ: 1, maxZ: 5.05, minY: 2.45 },
 ];

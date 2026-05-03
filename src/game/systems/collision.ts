@@ -14,7 +14,10 @@ export type Obstacle = {
 export const PET_R = 0.3;
 
 function blocks(o: Obstacle, x: number, z: number, y: number, r: number): boolean {
-  if (o.minY !== undefined && y + 0.5 < o.minY) return false;
+  // Foot-based y check: the pet's feet must be inside the obstacle's
+  // vertical span for it to count. This lets a pet descend through the
+  // stair hole as soon as its y drops below the floor 2 plane.
+  if (o.minY !== undefined && y < o.minY) return false;
   if (o.maxY !== undefined && y > o.maxY) return false;
   const cx = Math.max(o.minX, Math.min(x, o.maxX));
   const cz = Math.max(o.minZ, Math.min(z, o.maxZ));
