@@ -13,7 +13,7 @@ export function Stairs() {
       {STEP_INDICES.map((i) => (
         <mesh
           key={i}
-          position={[2.0, (STEP_RISE * (i + 1)) / 2, -3 + 0.3 + i * STEP_DEPTH]}
+          position={[2.0, (STEP_RISE * (i + 1)) / 2, -5 + 0.3 + i * STEP_DEPTH]}
           castShadow
         >
           <boxGeometry args={[1.0, STEP_RISE * (i + 1), STEP_DEPTH]} />

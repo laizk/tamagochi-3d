@@ -7,12 +7,12 @@ export function Floor() {
     <>
       {/* floor 1 (ground) */}
       <mesh position={[0, 0, 0]} receiveShadow>
-        <boxGeometry args={[6, 0.05, 6]} />
+        <boxGeometry args={[10, 0.05, 10]} />
         <meshStandardMaterial color={FLOOR_COLOR} />
       </mesh>
       {/* floor 2 */}
       <mesh position={[0, 2.5, 0]} receiveShadow castShadow>
-        <boxGeometry args={[6, 0.05, 6]} />
+        <boxGeometry args={[10, 0.05, 10]} />
         <meshStandardMaterial color={FLOOR_COLOR} />
       </mesh>
     </>
