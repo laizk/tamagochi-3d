@@ -1,25 +1,31 @@
 'use client';
 
-const STAIR_COLOR = '#C49A6C';
-const STEP_RISE = 0.5;
-const STEP_DEPTH = 0.6;
+import {
+  STAIR_BASE_Z,
+  STAIR_WIDTH,
+  STAIR_X,
+  STEP_COUNT,
+  STEP_DEPTH,
+  STEP_RISE,
+} from './stair-config';
 
-// Five steps rendered explicitly — no array-index key needed.
-const STEP_INDICES = [0, 1, 2, 3, 4] as const;
+const STAIR_COLOR = '#C49A6C';
+
+const STEP_INDICES = Array.from({ length: STEP_COUNT }, (_, i) => i);
 
 export function Stairs() {
   return (
     <>
-      {STEP_INDICES.map((i) => (
-        <mesh
-          key={i}
-          position={[2.0, (STEP_RISE * (i + 1)) / 2, -5 + 0.3 + i * STEP_DEPTH]}
-          castShadow
-        >
-          <boxGeometry args={[1.0, STEP_RISE * (i + 1), STEP_DEPTH]} />
-          <meshStandardMaterial color={STAIR_COLOR} />
-        </mesh>
-      ))}
+      {STEP_INDICES.map((i) => {
+        const top = STEP_RISE * (i + 1);
+        const z = STAIR_BASE_Z - 0.3 - i * STEP_DEPTH;
+        return (
+          <mesh key={i} position={[STAIR_X, top / 2, z]} castShadow receiveShadow>
+            <boxGeometry args={[STAIR_WIDTH, top, STEP_DEPTH]} />
+            <meshStandardMaterial color={STAIR_COLOR} />
+          </mesh>
+        );
+      })}
     </>
   );
 }
