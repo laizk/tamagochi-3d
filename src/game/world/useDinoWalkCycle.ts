@@ -2,7 +2,7 @@
 
 import { useFrame } from '@react-three/fiber';
 import { type RefObject, useRef } from 'react';
-import type { Mesh } from 'three';
+import type { Mesh, Object3D } from 'three';
 import { useGame } from '@/src/game/store';
 
 const WALK_FREQ_HZ = 4;
@@ -17,8 +17,8 @@ const IDLE_ARM_PERIOD_MS = 500;
 const IDLE_TAIL_PERIOD_MS = 600;
 
 type Refs = {
-  armL: RefObject<Mesh | null>;
-  armR: RefObject<Mesh | null>;
+  armL: RefObject<Object3D | null>;
+  armR: RefObject<Object3D | null>;
   legL: RefObject<Mesh | null>;
   legR: RefObject<Mesh | null>;
   tail: RefObject<Mesh | null>;

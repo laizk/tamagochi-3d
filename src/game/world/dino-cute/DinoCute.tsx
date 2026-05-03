@@ -31,8 +31,8 @@ const NEVER_PETTED = Number.POSITIVE_INFINITY;
 
 export function DinoCute() {
   const groupRef = useRef<Group>(null);
-  const armLRef = useRef<Mesh>(null);
-  const armRRef = useRef<Mesh>(null);
+  const armLRef = useRef<Group>(null);
+  const armRRef = useRef<Group>(null);
   const legLRef = useRef<Mesh>(null);
   const legRRef = useRef<Mesh>(null);
   const tailRef = useRef<Mesh>(null);
@@ -132,8 +132,8 @@ export function DinoCute() {
         <Spikes color={SPIKE_COLOR} />
 
         {/* T-rex arms — chest-side, forearm refs driven by walk cycle */}
-        <TRexArm x={-0.3} color={BODY_COLOR} clawColor={CLAW_COLOR} forearmRef={armLRef} />
-        <TRexArm x={0.3} color={BODY_COLOR} clawColor={CLAW_COLOR} forearmRef={armRRef} />
+        <TRexArm x={-0.3} color={BODY_COLOR} clawColor={CLAW_COLOR} armRef={armLRef} />
+        <TRexArm x={0.3} color={BODY_COLOR} clawColor={CLAW_COLOR} armRef={armRRef} />
       </group>
 
       {/* legs — vertical, NOT leaned. y must match LEG_BASE_Y in useDinoWalkCycle.ts */}
