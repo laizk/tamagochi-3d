@@ -1,6 +1,7 @@
 'use client';
 import { Bed } from '@/src/game/world/areas/home-interior/Bed';
 import { DiningTable } from '@/src/game/world/areas/home-interior/DiningTable';
+import { Door } from '@/src/game/world/areas/home-interior/Door';
 import { Floor } from '@/src/game/world/areas/home-interior/Floor';
 import { PictureFrame } from '@/src/game/world/areas/home-interior/PictureFrame';
 import { Stairs } from '@/src/game/world/areas/home-interior/Stairs';
@@ -13,6 +14,7 @@ export function Home() {
     <>
       <Sky />
       <Walls />
+      <Door />
       <Floor />
       <Stairs />
       <DiningTable position={[-1.5, 0, 0]} />

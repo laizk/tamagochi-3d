@@ -4,13 +4,22 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { Raycaster, Vector2, Vector3 } from 'three';
 import { useGame } from '@/src/game/store';
+import { type Obstacle, PET_R, separatePets, tryStep } from '@/src/game/systems/collision';
+import { HOME_OBSTACLES } from '@/src/game/world/areas/home-interior/obstacles';
 import {
   FLOOR_2_THRESHOLD,
   STAIR_BASE_WAYPOINT,
   STAIR_TOP_WAYPOINT,
 } from '@/src/game/world/areas/home-interior/stair-config';
+import { readRuntimePos, writeRuntimePos } from '@/src/game/world/runtimePositions';
 
 const MOVE_SPEED = 2.2; // units / second
+
+const NO_OBSTACLES: Obstacle[] = [];
+
+function obstaclesFor(area: string): Obstacle[] {
+  return area === 'home' ? HOME_OBSTACLES : NO_OBSTACLES;
+}
 
 /**
  * Build a waypoint queue between two world points. In the home, switching
@@ -78,30 +87,39 @@ export function TapControls() {
   }, [camera, gl, scene]);
 
   useFrame((_, dt) => {
-    if (queue.current.length === 0) return;
     const active = useGame.getState().active;
     const action = useGame.getState().characters[active].action;
     if (action !== null) {
       queue.current = [];
       return;
     }
-    const next = queue.current[0];
     const pos = useGame.getState().characters[active].position;
+    // Always keep the runtime cache fresh so the other pet can avoid us.
+    writeRuntimePos(active, pos[0], pos[1], pos[2]);
+
+    if (queue.current.length === 0) return;
+    const next = queue.current[0];
     const dx = next.x - pos[0];
     const dz = next.z - pos[2];
     const dist = Math.hypot(dx, dz);
     if (dist < 0.05) {
-      // Snap to waypoint y, then advance to the next leg.
       useGame.getState().setPosition(active, [pos[0], next.y, pos[2]]);
       queue.current.shift();
       return;
     }
     const step = Math.min(dist, MOVE_SPEED * dt);
-    const nx = pos[0] + (dx / dist) * step;
-    const nz = pos[2] + (dz / dist) * step;
-    // Interpolate y by horizontal progress so the stair leg becomes a ramp.
-    const t = step / dist;
-    const ny = pos[1] + (next.y - pos[1]) * t;
+    const ux = (dx / dist) * step;
+    const uz = (dz / dist) * step;
+    const area = useGame.getState().currentArea;
+    const stepped = tryStep(pos[0], pos[2], pos[1], ux, uz, PET_R, obstaclesFor(area));
+    // pet-pet separation against the other character
+    const otherId = active === 'dino' ? 'lovebirds' : 'dino';
+    const other = readRuntimePos(otherId);
+    const adj = separatePets(stepped.x, stepped.z, pos[1], other[0], other[2], other[1], PET_R);
+    const nx = adj.x;
+    const nz = adj.z;
+    const t = Math.hypot(nx - pos[0], nz - pos[2]) / Math.max(dist, 0.0001);
+    const ny = pos[1] + (next.y - pos[1]) * Math.min(1, t);
     useGame.getState().setPosition(active, [nx, ny, nz]);
   });
 
