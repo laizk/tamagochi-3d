@@ -1,6 +1,6 @@
 'use client';
 
-const BODY_COLOR = '#7FE0B0';
+const BODY_COLOR = '#A8D5EE';
 const NOSTRIL_COLOR = '#1A1A24';
 
 export function Snout() {
