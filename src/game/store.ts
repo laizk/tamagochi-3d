@@ -10,6 +10,9 @@ export type SkinId = 'default';
 export type CharacterId = 'dino' | 'lovebirds';
 export type Species = 'dino' | 'lovebirds';
 
+export type ActionKind = 'eat' | 'bath' | 'sleep' | 'play';
+export type Action = { kind: ActionKind; startedAt: number; durationMs: number };
+
 export type Pet = {
   id: string;
   name: string;
@@ -19,6 +22,7 @@ export type Pet = {
   age: number; // seconds
   stats: Record<StatKey, Stat>;
   position: [number, number, number];
+  action: Action | null;
 };
 
 // Backwards-friendly alias for any existing imports.
@@ -46,6 +50,8 @@ export type GameActions = {
   hydrate: (s: GameState) => void;
   touchSeenAt: () => void;
   setLovebirdsSeen: () => void;
+  startAction: (charId: CharacterId, kind: ActionKind, durationMs: number) => void;
+  clearAction: (charId: CharacterId) => void;
 };
 
 export const INITIAL_DINO = (): Pet => ({
@@ -57,6 +63,7 @@ export const INITIAL_DINO = (): Pet => ({
   age: 0,
   stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
   position: [0, 0, 0],
+  action: null,
 });
 
 export const INITIAL_LOVEBIRDS = (): Pet => ({
@@ -68,6 +75,7 @@ export const INITIAL_LOVEBIRDS = (): Pet => ({
   age: 0,
   stats: { hunger: 100, happy: 100, energy: 100, clean: 100, health: 100 },
   position: [0, 0, 0],
+  action: null,
 });
 
 const clamp = (n: number, min = 0, max = 100) => Math.min(max, Math.max(min, n));
@@ -110,6 +118,9 @@ export const useGame = create<GameState & GameActions>((set) => ({
   hydrate: (next) => set(next),
   touchSeenAt: () => set({ lastSeenAt: Date.now() }),
   setLovebirdsSeen: () => set((s) => ({ intro: { ...s.intro, lovebirdsSeen: true } })),
+  startAction: (id, kind, durationMs) =>
+    set((s) => setChar(s, id, { action: { kind, startedAt: performance.now(), durationMs } })),
+  clearAction: (id) => set((s) => setChar(s, id, { action: null })),
 }));
 
 const _initialSnapshot = useGame.getState();

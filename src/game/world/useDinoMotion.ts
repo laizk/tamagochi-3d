@@ -42,6 +42,8 @@ export function useDinoMotion(ref: RefObject<Object3D | null>, baseY: number) {
     const bounceY = bouncePhase < 0.6 ? Math.sin((bouncePhase * Math.PI) / 0.6) * 0.4 : 0;
 
     const { position, stats } = useGame.getState().characters.dino;
+
+    // xz freeze comes from TapControls clearing the move target; this hook just renders the store position. Body bob/bounce always apply.
     ref.current.position.set(position[0], position[1] + baseY + bob + bounceY, position[2]);
 
     const sad = Math.min(stats.hunger, stats.happy, stats.energy, stats.clean, stats.health) < 25;
