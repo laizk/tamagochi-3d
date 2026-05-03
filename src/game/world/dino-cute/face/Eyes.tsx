@@ -8,7 +8,7 @@ import type { Expression } from '@/src/game/systems/expression';
 const PUPIL_COLOR = '#1A1A24';
 const SPARKLE_COLOR = '#FFFFFF';
 const TEAR_COLOR = '#9CD0FF';
-const LID_COLOR = '#7FE0B0';
+const LID_COLOR = '#A8D5EE';
 
 type Variant = 'open' | 'half' | 'closed' | 'squint' | 'wide';
 

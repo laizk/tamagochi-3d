@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import type { Group } from 'three';
 import type { Expression } from '@/src/game/systems/expression';
 
-const BODY_COLOR = '#7FE0B0';
+const BODY_COLOR = '#A8D5EE';
 const TEETH_COLOR = '#FFFFFF';
 
 function targetOpen(expr: Expression): number {
