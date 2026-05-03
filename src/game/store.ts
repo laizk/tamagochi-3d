@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export type StatKey = 'hunger' | 'happy' | 'energy' | 'clean' | 'health';
 export type Stat = number; // 0..100
-export type AreaId = 'home' | 'town' | 'park' | 'beach' | 'forest' | 'cave' | 'sky';
+export type AreaId = 'home' | 'yard' | 'town' | 'park' | 'beach' | 'forest' | 'cave' | 'sky';
 export type ControlMode = 'tap' | 'joystick' | 'auto';
 export type ThemeId = 'default';
 export type SkinId = 'default';

@@ -7,6 +7,7 @@ import { Home } from './Home';
 import { Park } from './Park';
 import { SkyIsland } from './SkyIsland';
 import { Town } from './Town';
+import { Yard } from './Yard';
 
 export type AreaConfig = {
   id: AreaId;
@@ -27,8 +28,17 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     emoji: '🏠',
     Component: Home,
     spawn: [0, 0, 0],
-    exits: ['town'],
-    extent: 8,
+    exits: ['yard'],
+    extent: 10,
+  },
+  yard: {
+    id: 'yard',
+    name: 'Yard',
+    emoji: '🌿',
+    Component: Yard,
+    spawn: [0, 0, 2],
+    exits: ['home', 'town'],
+    extent: 12,
   },
   town: {
     id: 'town',
@@ -36,7 +46,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     emoji: '🏘️',
     Component: Town,
     spawn: [0, 0, 0],
-    exits: ['home', 'park', 'beach', 'forest'],
+    exits: ['yard', 'park', 'beach', 'forest'],
     extent: 18,
   },
   park: {

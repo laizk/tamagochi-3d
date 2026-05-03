@@ -13,7 +13,7 @@ export function Town() {
         <cylinderGeometry args={[1.5, 1.5, 1, 16]} />
         <meshStandardMaterial color="#9aa9b6" />
       </mesh>
-      <Portal to="home" position={[-8, 0.7, 0]} />
+      <Portal to="yard" position={[-8, 0.7, 0]} />
       <Portal to="park" position={[0, 0.7, -8]} />
       <Portal to="beach" position={[8, 0.7, 0]} />
       <Portal to="forest" position={[0, 0.7, 8]} />
