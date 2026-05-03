@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { AREAS } from '@/src/game/world/areas/registry';
 
 describe('area registry', () => {
-  it('has 7 areas', () => {
-    expect(Object.keys(AREAS)).toHaveLength(7);
+  it('has 8 areas', () => {
+    expect(Object.keys(AREAS)).toHaveLength(8);
   });
   it('every exit references a valid area id', () => {
     for (const a of Object.values(AREAS)) {
