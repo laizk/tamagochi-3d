@@ -1,15 +1,15 @@
 /**
  * Stair geometry constants shared between the Stairs mesh and TapControls
- * path planner. Stairs run north–south at the east-half centerline, ascending
- * from a low entry on the south end to a top landing near the divider area.
+ * path planner. Stairs hug the east wall right of the front door, ascending
+ * from a low south entry up to a top landing roughly in the center.
  */
-export const STAIR_X = 2.5;
+export const STAIR_X = 4.5;
 export const STAIR_WIDTH = 1.0;
 export const STEP_RISE = 0.5;
 export const STEP_DEPTH = 0.6;
 export const STEP_COUNT = 5;
-/** South end of the staircase (lowest step center). */
-export const STAIR_BASE_Z = 2.0;
+/** South end of the staircase (lowest step center) — placed near the door. */
+export const STAIR_BASE_Z = 4.0;
 export const FLOOR_2_Y = 2.5;
 
 /** World-space waypoint just south of the bottom step, on floor 1. */
