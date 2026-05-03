@@ -27,7 +27,7 @@ export const AREAS: Record<AreaId, AreaConfig> = {
     name: 'Home',
     emoji: '🏠',
     Component: Home,
-    spawn: [0, 0, 0],
+    spawn: [-1.5, 0, 1.5],
     exits: ['yard'],
     extent: 10,
   },
