@@ -1,4 +1,4 @@
-import type { ActionKind, CharacterId } from '@/src/game/store';
+import type { ActionKind, CharacterId, FoodTarget } from '@/src/game/store';
 import { useGame } from '@/src/game/store';
 import { play as playAudio } from '@/src/game/systems/audio';
 
@@ -27,17 +27,55 @@ export const BIRD_FOODS: Record<BirdFoodId, FoodDef> = {
   mango: { name: 'Mango', emoji: '🥭', hungerRestored: 50, happyBonus: 15 },
 };
 
-export function feed(food: FoodId, charId: CharacterId): void {
-  if (useGame.getState().characters[charId].action) return;
-  const def =
+/**
+ * Where each pet's food appears in the home and where the pet has to stand
+ * to eat it. Dino dines at the table; lovebirds eat at a feeder near the
+ * east wall.
+ */
+const FOOD_SPAWNS: Record<
+  CharacterId,
+  { position: [number, number, number]; waypoint: [number, number, number] }
+> = {
+  dino: { position: [-1.5, 0.85, 0], waypoint: [-1.5, 0, 0.95] },
+  lovebirds: { position: [3.5, 0.4, -3.5], waypoint: [3.5, 0, -3.5] },
+};
+
+export function getFoodDef(foodId: string, charId: CharacterId): FoodDef | null {
+  const map =
     charId === 'dino'
-      ? (FOODS as Record<string, FoodDef>)[food]
-      : (BIRD_FOODS as Record<string, FoodDef>)[food];
+      ? (FOODS as Record<string, FoodDef>)
+      : (BIRD_FOODS as Record<string, FoodDef>);
+  return map[foodId] ?? null;
+}
+
+export function feed(food: FoodId, charId: CharacterId): void {
+  const state = useGame.getState();
+  if (state.characters[charId].action) return;
+  const def = getFoodDef(food, charId);
   if (!def) return; // unknown food for this species
-  const s = useGame.getState();
-  s.applyStatDelta(charId, 'hunger', def.hungerRestored);
-  if (def.happyBonus) s.applyStatDelta(charId, 'happy', def.happyBonus);
-  s.startAction(charId, 'eat', ACTION_DURATION_MS.eat);
+  const spawn = FOOD_SPAWNS[charId];
+  const target: FoodTarget = {
+    foodId: food,
+    position: spawn.position,
+    waypoint: spawn.waypoint,
+  };
+  state.setFoodTarget(charId, target);
+}
+
+/**
+ * Called by movement code once the pet reaches its food waypoint.
+ * Applies hunger/happy delta, starts the eat action, and removes the drop.
+ */
+export function consumeFood(charId: CharacterId): void {
+  const state = useGame.getState();
+  const target = state.characters[charId].foodTarget;
+  if (!target) return;
+  const def = getFoodDef(target.foodId, charId);
+  state.clearFoodTarget(charId);
+  if (!def) return;
+  state.applyStatDelta(charId, 'hunger', def.hungerRestored);
+  if (def.happyBonus) state.applyStatDelta(charId, 'happy', def.happyBonus);
+  state.startAction(charId, 'eat', ACTION_DURATION_MS.eat);
 }
 
 type PetListener = (charId: CharacterId) => void;

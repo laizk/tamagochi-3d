@@ -1,28 +1,40 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame } from '@/src/game/store';
-import { bath, FOODS, feed, pet, play, sleep } from '@/src/game/systems/interactions';
+import { bath, consumeFood, FOODS, feed, pet, play, sleep } from '@/src/game/systems/interactions';
 
-describe('feed', () => {
+describe('feed → consumeFood', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
 
-  it("raises hunger by the food's value, clamped at 100", () => {
+  it('feed alone only stages a foodTarget; hunger does not change yet', () => {
     useGame.getState().setStat('dino', 'hunger', 30);
     feed('apple', 'dino');
+    expect(useGame.getState().characters.dino.foodTarget?.foodId).toBe('apple');
+    expect(useGame.getState().characters.dino.stats.hunger).toBe(30);
+    expect(useGame.getState().characters.dino.action).toBeNull();
+  });
+
+  it("after consumeFood, hunger rises by the food's value, clamped at 100", () => {
+    useGame.getState().setStat('dino', 'hunger', 30);
+    feed('apple', 'dino');
+    consumeFood('dino');
     const food = FOODS.apple;
     expect(useGame.getState().characters.dino.stats.hunger).toBe(
       Math.min(100, 30 + food.hungerRestored),
     );
+    expect(useGame.getState().characters.dino.foodTarget).toBeNull();
   });
 
   it('does not raise above 100', () => {
     useGame.getState().setStat('dino', 'hunger', 95);
     feed('cake', 'dino');
+    consumeFood('dino');
     expect(useGame.getState().characters.dino.stats.hunger).toBe(100);
   });
 
-  it('also raises happy by happyBonus', () => {
+  it('also raises happy by happyBonus on consume', () => {
     useGame.getState().setStat('dino', 'happy', 50);
     feed('cake', 'dino');
+    consumeFood('dino');
     expect(useGame.getState().characters.dino.stats.happy).toBeGreaterThan(50);
   });
 });
@@ -30,8 +42,9 @@ describe('feed', () => {
 describe('action triggers', () => {
   beforeEach(() => useGame.setState(useGame.getInitialState(), true));
 
-  it('feed starts an "eat" action with 3000ms duration', () => {
+  it('feed → consumeFood starts an "eat" action with 3000ms duration', () => {
     feed('apple', 'dino');
+    consumeFood('dino');
     const a = useGame.getState().characters.dino.action;
     expect(a?.kind).toBe('eat');
     expect(a?.durationMs).toBe(3000);

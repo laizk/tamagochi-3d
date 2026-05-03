@@ -14,7 +14,9 @@ test('feeding the dino freezes movement and disables action buttons for ~3s', as
           stage: 'baby',
           age: 10,
           stats: { hunger: 50, happy: 100, energy: 100, clean: 100, health: 100 },
-          position: [0, 0, 0],
+          // Seed dino right at the dining-table food waypoint so the
+          // walk-to-food doesn't add measurable delay to the lock window.
+          position: [-1.5, 0, 0.95],
         },
         lovebirds: {
           id: 'lovebirds-1',

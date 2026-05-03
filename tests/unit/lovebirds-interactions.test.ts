@@ -4,6 +4,7 @@ import {
   _resetPetDebounce,
   BIRD_FOODS,
   bath,
+  consumeFood,
   FOODS,
   feed,
   pet,
@@ -28,12 +29,14 @@ describe('interactions: charId-aware', () => {
 
   it('feed(food, charId) — bird food only valid for lovebirds', () => {
     feed('seed', 'lovebirds');
+    consumeFood('lovebirds');
     expect(useGame.getState().characters.lovebirds.stats.hunger).toBe(75);
     expect(useGame.getState().characters.dino.stats.hunger).toBe(50);
   });
 
   it('feed(food, charId) — dino food only valid for dino', () => {
     feed('apple', 'dino');
+    consumeFood('dino');
     expect(useGame.getState().characters.dino.stats.hunger).toBe(75);
   });
 

@@ -17,9 +17,12 @@ export function ActionBar() {
   const area = useGame((s) => s.currentArea);
   const active = useGame((s) => s.active);
   const action = useGame((s) => s.characters[active].action);
+  const foodTarget = useGame((s) => s.characters[active].foodTarget);
   const homeOnly = area === 'home';
   const menu = active === 'dino' ? FOODS : BIRD_FOODS;
-  const locked = action !== null;
+  // Lock while a pet is walking to its food so the kid can't queue a new
+  // food on top of the current fetch (tap the ground to cancel instead).
+  const locked = action !== null || foodTarget !== null;
   const dim = locked ? 'opacity-40' : '';
 
   return (
