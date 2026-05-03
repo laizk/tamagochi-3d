@@ -200,29 +200,34 @@ export function Yard() {
     <>
       <Sky />
       <Ground color="#a98e6a" />
-      {/* cottage exterior — visual placeholder; the interior lives in Home area */}
+      {/* cottage exterior — sized 6×2×6 to match the interior footprint */}
       <mesh position={[0, 1, -3]} castShadow>
-        <boxGeometry args={[3, 2, 2]} />
+        <boxGeometry args={[6, 2, 6]} />
         <meshStandardMaterial color="#d97a5e" />
       </mesh>
       <mesh position={[0, 2.5, -3]} rotation={[0, Math.PI / 4, 0]} castShadow>
-        <coneGeometry args={[2.2, 1.2, 4]} />
+        <coneGeometry args={[4.5, 1.5, 4]} />
         <meshStandardMaterial color="#7e3f2c" />
       </mesh>
-      <Pond />
+      {/* Pond wrapped to push it 3.5u further back so it clears the bigger cottage */}
+      <group position={[0, 0, -3.5]}>
+        <Pond />
+      </group>
       <Fountain />
-      <Portal to="home" position={[0, 0.7, -1]} />
+      <Portal to="home" position={[0, 0.7, 0.3]} />
       <Portal to="town" position={[8, 0.7, 0]} />
     </>
   );
 }
 ```
 
-Cottage stays small (3×2×2) — visual placeholder only; the real "house" experience lives inside Home. Sizing it to match the 6×6 interior footprint would push it back into the Pond at z=-6, so we keep the original B1 cottage geometry untouched and accept the size discrepancy.
+Cottage exterior is sized 6×2×6 to match the new 6×6 interior footprint, so the outside view reads consistent with what the player will see inside. Roof cone scaled up proportionally (radius 4.5, height 1.5).
 
-Pond is at `[0, 0.01, -6]` (behind cottage, unchanged). Fountain at `[2.5, 0, 1.5]` (front-right, unchanged).
+The bigger cottage now occupies `z=-6..0`. Pond was previously at `z=-6` (radius 1.6 → would intersect cottage rear). Pond is wrapped in `<group position={[0, 0, -3.5]}>` inside `Yard.tsx` so its effective position becomes `z=-9.5` (rim at `z=-11.1..-7.9`) — 1.9u clear of cottage rear. `Pond.tsx` itself stays unchanged. Yard extent is 12 → camera pan still reaches the pond.
 
-Portal `home` (front-of-cottage entry) at `[0, 0.7, -1]` — in front of the south face of the cottage. Portal `town` at `[8, 0.7, 0]` — east edge.
+Fountain stays at `[2.5, 0, 1.5]` — already in front of the cottage south face (`z=0`), no overlap with the bigger cottage.
+
+Portal `home` at `[0, 0.7, 0.3]` — directly in front of the cottage south face (the "front door"). Portal `town` at `[8, 0.7, 0]` — east edge.
 
 ### 6. Registry update
 
