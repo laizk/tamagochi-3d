@@ -10,12 +10,19 @@ import { getMood, type Mood } from '@/src/game/systems/mood';
 import { useDinoMotion } from '@/src/game/world/useDinoMotion';
 import { useDinoWalkCycle } from '@/src/game/world/useDinoWalkCycle';
 import { useFacing } from '@/src/game/world/useFacing';
+import { Claws } from './Claws';
 import { DinoFace } from './face';
+import { Mane } from './Mane';
 import { PlayBall } from './PlayBall';
+import { Spikes } from './Spikes';
 
-const BODY_COLOR = '#7FE0B0';
-const BELLY_COLOR = '#FFF6E0';
-const CHEEK_COLOR = '#FF9CB8';
+const BODY_COLOR = '#A8D5EE'; // light blue
+const BELLY_COLOR = '#FFF6E0'; // cream
+const CHEEK_COLOR = '#FF9CB8'; // pink
+const LEG_COLOR = '#5E8FB5'; // darker blue
+const MANE_COLOR = '#F5B83A'; // orange
+const SPIKE_COLOR = '#3D6F94'; // dark blue
+const CLAW_COLOR = '#1A1A1A'; // near-black
 
 const NEVER_PETTED = Number.POSITIVE_INFINITY;
 
@@ -80,36 +87,41 @@ export function DinoCute() {
         else pet('dino');
       }}
     >
-      {/* body */}
-      <mesh position={[0, 0.55, 0]} scale={[1.0, 0.85, 1.1]} castShadow>
+      {/* body — elongated horizontal */}
+      <mesh position={[0, 0.55, 0]} scale={[1.1, 0.7, 1.6]} castShadow>
         <sphereGeometry args={[0.45, 24, 24]} />
         <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
       </mesh>
 
       {/* belly patch */}
-      <mesh position={[0, 0.5, 0.18]} scale={[1, 0.9, 0.4]}>
-        <sphereGeometry args={[0.32, 20, 20]} />
+      <mesh position={[0, 0.45, 0.3]} scale={[1, 0.9, 0.5]}>
+        <sphereGeometry args={[0.3, 20, 20]} />
         <meshStandardMaterial color={BELLY_COLOR} roughness={0.7} />
       </mesh>
 
-      {/* head */}
-      <mesh position={[0, 1.05, 0.25]} castShadow>
-        <sphereGeometry args={[0.32, 24, 24]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-      </mesh>
+      {/* head + mane (shared origin) */}
+      <group position={[0, 0.85, 0.55]}>
+        <mesh castShadow>
+          <sphereGeometry args={[0.32, 24, 24]} />
+          <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+        </mesh>
+        <Mane color={MANE_COLOR} />
+      </group>
 
-      {/* cheeks */}
-      <mesh position={[-0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
+      {/* cheeks (head-relative absolute coords) */}
+      <mesh position={[-0.22, 0.8, 0.62]} scale={[1, 0.6, 0.4]}>
         <sphereGeometry args={[0.07, 16, 16]} />
         <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
       </mesh>
-      <mesh position={[0.22, 1.0, 0.32]} scale={[1, 0.6, 0.4]}>
+      <mesh position={[0.22, 0.8, 0.62]} scale={[1, 0.6, 0.4]}>
         <sphereGeometry args={[0.07, 16, 16]} />
         <meshStandardMaterial color={CHEEK_COLOR} roughness={0.6} />
       </mesh>
 
-      {/* face — snout, jaw, eyes, brows, tongue, extras */}
-      <DinoFace expression={expression} />
+      {/* face — wrapped to track new head position (was [0, 1.05, 0.25], now [0, 0.85, 0.55]) */}
+      <group position={[0, -0.2, 0.3]}>
+        <DinoFace expression={expression} />
+      </group>
 
       {/* arms (walk cycle) */}
       <mesh ref={armLRef} position={[-0.42, 0.55, 0.05]} castShadow>
@@ -121,15 +133,19 @@ export function DinoCute() {
         <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
       </mesh>
 
-      {/* legs — y=0.2 must match LEG_BASE_Y in useDinoWalkCycle.ts */}
+      {/* legs — y must match LEG_BASE_Y in useDinoWalkCycle.ts */}
       <mesh ref={legLRef} position={[-0.18, 0.2, 0]} castShadow>
         <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+        <meshStandardMaterial color={LEG_COLOR} roughness={0.7} />
       </mesh>
       <mesh ref={legRRef} position={[0.18, 0.2, 0]} castShadow>
         <capsuleGeometry args={[0.1, 0.2, 8, 16]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
+        <meshStandardMaterial color={LEG_COLOR} roughness={0.7} />
       </mesh>
+
+      {/* claw dots */}
+      <Claws x={-0.18} color={CLAW_COLOR} />
+      <Claws x={0.18} color={CLAW_COLOR} />
 
       {/* tail */}
       <mesh position={[0, 0.5, -0.45]} castShadow>
@@ -145,19 +161,9 @@ export function DinoCute() {
         <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
       </mesh>
 
-      {/* back bumps */}
-      <mesh position={[0, 0.95, -0.1]} castShadow>
-        <coneGeometry args={[0.06, 0.1, 12]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-      </mesh>
-      <mesh position={[0, 0.95, -0.3]} castShadow>
-        <coneGeometry args={[0.07, 0.12, 12]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-      </mesh>
-      <mesh position={[0, 0.7, -0.5]} castShadow>
-        <coneGeometry args={[0.05, 0.08, 12]} />
-        <meshStandardMaterial color={BODY_COLOR} roughness={0.7} />
-      </mesh>
+      {/* spikes — replaces old inline back bumps */}
+      <Spikes color={SPIKE_COLOR} />
+
       <PlayBall />
     </group>
   );
