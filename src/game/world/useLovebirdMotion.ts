@@ -2,7 +2,7 @@
 
 import { useFrame } from '@react-three/fiber';
 import { type RefObject, useRef } from 'react';
-import { type Group, Vector3 } from 'three';
+import type { Group, Vector3 } from 'three';
 import { useGame } from '@/src/game/store';
 import { lerpAngle } from '@/src/lib/math';
 
@@ -20,8 +20,8 @@ export function useLovebirdMotion(
   leaderRef: RefObject<Group | null>,
   partnerRef: RefObject<Group | null>,
 ) {
-  const prevLeader = useRef(new Vector3());
-  const prevPartner = useRef(new Vector3());
+  const prevLeader = useRef<Vector3 | null>(null);
+  const prevPartner = useRef<Vector3 | null>(null);
 
   useFrame((_state, dt) => {
     const { position } = useGame.getState().characters.lovebirds;
@@ -34,7 +34,7 @@ export function useLovebirdMotion(
         { x: target[0], y: target[1], z: target[2] } as never,
         Math.min(1, dt * 8),
       );
-      applyYaw(leaderRef.current, prevLeader.current, dt);
+      applyYaw(leaderRef.current, prevLeader, dt);
     }
     if (partnerRef.current && leaderRef.current) {
       const lp = leaderRef.current.position;
@@ -44,18 +44,22 @@ export function useLovebirdMotion(
         z: lp.z + PARTNER_OFFSET[2],
       };
       partnerRef.current.position.lerp(target as never, Math.min(1, dt * 6));
-      applyYaw(partnerRef.current, prevPartner.current, dt);
+      applyYaw(partnerRef.current, prevPartner, dt);
     }
   });
 }
 
-function applyYaw(group: Group, prev: Vector3, dt: number): void {
+function applyYaw(group: Group, prev: { current: Vector3 | null }, dt: number): void {
   const cur = group.position;
-  const dx = cur.x - prev.x;
-  const dz = cur.z - prev.z;
+  if (!prev.current) {
+    prev.current = cur.clone();
+    return;
+  }
+  const dx = cur.x - prev.current.x;
+  const dz = cur.z - prev.current.z;
   if (Math.hypot(dx, dz) > SPEED_EPS) {
     const targetYaw = Math.atan2(dx, dz);
     group.rotation.y = lerpAngle(group.rotation.y, targetYaw, Math.min(1, dt * YAW_LERP_RATE));
   }
-  prev.copy(cur);
+  prev.current.copy(cur);
 }
