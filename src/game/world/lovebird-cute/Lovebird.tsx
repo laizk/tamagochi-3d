@@ -47,10 +47,10 @@ export function Lovebird({
     if (wingRRef.current) wingRRef.current.rotation.z = -flap;
 
     // Pet-spin (one full Y rotation over 0.6s).
-    if (ref.current) {
+    // Only touch rotation.y during an active spin; parent owns it otherwise.
+    if (ref.current && Number.isFinite(spinAt)) {
       const dt = (now - spinAt) / 1000;
-      ref.current.rotation.y =
-        Number.isFinite(spinAt) && dt < 0.6 ? dt * (Math.PI * 2) * (1 / 0.6) : 0;
+      if (dt < 0.6) ref.current.rotation.y = dt * (Math.PI * 2) * (1 / 0.6);
     }
   });
 

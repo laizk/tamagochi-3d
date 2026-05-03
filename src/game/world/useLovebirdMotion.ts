@@ -9,8 +9,9 @@ const GLIDE_Y = 0.5;
 const PARTNER_OFFSET: [number, number, number] = [0.35, 0.05, -0.1];
 
 /**
- * Drives the leader/partner lovebirds in active mode.
+ * Drives the leader/partner lovebirds in active mode only (active === 'lovebirds').
  * Leader follows `pos.lovebirds`, partner trails leader with delay.
+ * Yaw is handled separately by `useFacing` in the caller.
  */
 export function useLovebirdMotion(
   leaderRef: RefObject<Group | null>,
