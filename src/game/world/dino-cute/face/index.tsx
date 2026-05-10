@@ -60,9 +60,12 @@ function Bubbles() {
   );
 }
 
+// right-cheek sparkle anchor (eat expression)
+const SPARKLE_POS: [number, number, number] = [0.16, 1.22, 0.55];
+
 function Sparkle() {
   return (
-    <mesh position={[0.16, 1.22, 0.55]}>
+    <mesh position={SPARKLE_POS}>
       <sphereGeometry args={[0.025, 8, 8]} />
       <meshStandardMaterial
         color="#FFF7A0"

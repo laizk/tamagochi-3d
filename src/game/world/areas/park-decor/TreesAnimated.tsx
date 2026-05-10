@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import type { Group } from 'three';
 
+// [x, z, windPhase] — third element is a sine-wave phase offset, not a coordinate
 const TREES: Array<[number, number, number]> = [
   [3, 4, 0],
   [-4, 5, 1.0],

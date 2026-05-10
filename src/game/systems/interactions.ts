@@ -96,6 +96,7 @@ export function _resetPetDebounce(): void {
 }
 
 export function pet(charId: CharacterId): void {
+  if (useGame.getState().characters[charId].action) return;
   const now = performance.now();
   const last = lastPetAt[charId] ?? -Infinity;
   if (now - last < PET_DEBOUNCE_MS) {
