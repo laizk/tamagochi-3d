@@ -13,6 +13,7 @@ export function PlayBall() {
   const action = useGame((s) => s.characters.dino.action);
 
   useFrame(() => {
+    if (!action || action.kind !== 'play') return;
     if (!ref.current) return;
     const t = performance.now() / 1000;
     // Local coords — parent dino group provides world position + facing rotation.

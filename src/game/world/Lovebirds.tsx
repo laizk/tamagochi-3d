@@ -1,7 +1,7 @@
 'use client';
 
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Group } from 'three';
 import { useGame } from '@/src/game/store';
 import { onPet, pet } from '@/src/game/systems/interactions';
@@ -48,11 +48,12 @@ export function Lovebirds() {
 
   // Facing — leader uses store position in active mode and own velocity in NPC mode.
   // Single hook switching getter based on active.
-  const leaderPosGetter = makePositionFromGroup(leaderRef);
+  const leaderPosGetter = useMemo(() => makePositionFromGroup(leaderRef), []);
+  const partnerPosGetter = useMemo(() => makePositionFromGroup(partnerRef), []);
   useFacing(leaderRef, () =>
     useGame.getState().active === 'lovebirds' ? getLovebirdsStorePos() : leaderPosGetter(),
   );
-  useFacing(partnerRef, makePositionFromGroup(partnerRef));
+  useFacing(partnerRef, partnerPosGetter);
 
   const onLeaderClick = () => {
     const a = useGame.getState().characters.lovebirds.action;
